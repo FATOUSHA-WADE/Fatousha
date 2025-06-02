@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+ /* Styles pour les messages */
+.message-bubble {
+    position: relative;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 70%;
+  }
+  
+  .message-bubble.self-start {
+    align-self: flex-start;
+    background-color: white;
+    color: black;
+    border: 1px solid #e0e0e0;
+  }
+  /* Styles pour les cases à cocher */
+.diffusion-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  /* Styles pour les boutons */
+.remove-member-btn {
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  
+  .change-role-btn {
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  .contact-message {
+    font-size: 0.875rem;
+  }
+  
+  .contact-message.draft {
+    color: red;
+  }
+  .member-management-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .member-management-btn:hover {
+    opacity: 0.8;
+  }
+  
+  .add-member-checkbox {
+    margin-right: 8px;
+  }
+  
+  .member-list-container {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .member-item {
+    transition: background-color 0.2s;
+  }
+  
+  .member-item:hover {
+    background-color: #f8f9fa;
+  }
+  
