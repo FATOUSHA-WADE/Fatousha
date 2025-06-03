@@ -91,59 +91,44 @@ if(diffusionBtn) {
     elements.addGroupBtn.onclick = () => showForm('group');
     
     elements.archiveBtn.onclick = () => {
-      if (state.currentChat && state.currentChat.type === 'contact' && state.section === 'contacts') {
-        showPopup('confirm', 'Archiver le contact', `Êtes-vous sûr de vouloir archiver "${state.currentChat.name}" ?`, 
-          () => archiveAction(state.currentChat.id, false));
-      } else {
-        showPopup('error', 'Erreur', 'Veuillez sélectionner un contact à archiver');
-      }
-    };
-
-    elements.editGroupBtn.onclick = () => {
-      if (state.currentChat && state.currentChat.type === 'group') {
-        showEditGroupForm();
-      }
-    };
-    
-    elements.showArchivesBtn.onclick = () => switchSection('archives');
-    
-    ['cancel-contact', 'cancel-group', 'cancel-edit-group', 'cancel-quick-contact'].forEach(id => 
-      document.getElementById(id).onclick = () => hideForm(id.split('-')[1] === 'edit' ? 'edit-group' : id.split('-')[1]));
-    
-    document.getElementById('save-contact').onclick = saveContact;
-    document.getElementById('save-group').onclick = saveGroup;
-    document.getElementById('save-edit-group').onclick = saveEditGroup;
-    document.getElementById('save-quick-contact').onclick = saveQuickContact;
-    document.getElementById('add-new-contact-btn').onclick = () => showForm('quick-contact');
-    document.getElementById('add-new-contact-edit-btn').onclick = () => showForm('quick-contact');
-    
-    elements.sendBtn.onclick = sendMessage;
-    elements.messageInput.onkeypress = e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        sendMessage(); // Appeler la fonction pour envoyer le message
-      }
-    };
-    elements.search.oninput = handleSearch;
-    elements.search.onkeypress = handleSearchEnter;
-    document.getElementById('contact-phone').oninput = e => e.target.value = e.target.value.replace(/[^\d\s]/g, '');
-    document.getElementById('quick-contact-phone').oninput = e => e.target.value = e.target.value.replace(/[^\d\s]/g, '');
-    elements.deleteContactBtn = document.getElementById('delete-contact-btn');
-
-    elements.deleteContactBtn.onclick = () => {
-      if (state.currentChat && state.currentChat.type === 'contact') {
+      if (
+        state.currentChat &&
+        (state.currentChat.type === 'contact' || state.currentChat.type === 'group') &&
+        state.section === 'contacts'
+      ) {
         showPopup(
           'confirm',
-          'Supprimer le contact',
+          'Archiver',
+          `Êtes-vous sûr de vouloir archiver "${state.currentChat.name}" ?`,
+          () => archiveAction(state.currentChat.id, false)
+        );
+      } else {
+        showPopup('error', 'Erreur', 'Veuillez sélectionner un contact ou un groupe à archiver');
+      }
+    };
+
+    elements.deleteContactBtn.onclick = () => {
+      if (
+        state.currentChat &&
+        (state.currentChat.type === 'contact' || state.currentChat.type === 'group')
+      ) {
+        showPopup(
+          'confirm',
+          'Supprimer',
           `Êtes-vous sûr de vouloir supprimer "${state.currentChat.name}" ?`,
           () => deleteContact(state.currentChat.id)
         );
       } else {
-        showPopup('error', 'Erreur', 'Veuillez sélectionner un contact à supprimer.');
+        showPopup('error', 'Erreur', 'Veuillez sélectionner un contact ou un groupe à supprimer.');
       }
     };
+
     document.getElementById('delete-messages-btn').onclick = () => {
-      if (state.currentChat && data.messages[state.currentChat.id]) {
+      if (
+        state.currentChat &&
+        (state.currentChat.type === 'contact' || state.currentChat.type === 'group') &&
+        data.messages[state.currentChat.id]
+      ) {
         showPopup(
           'confirm',
           'Supprimer les messages',
@@ -156,9 +141,37 @@ if(diffusionBtn) {
           }
         );
       } else {
-        showPopup('error', 'Erreur', 'Aucun contact sélectionné.');
+        showPopup('error', 'Erreur', 'Aucun contact ou groupe sélectionné.');
       }
     };
+    
+elements.showArchivesBtn.onclick = () => switchSection('archives');
+    
+    ['cancel-contact', 'cancel-group', 'cancel-edit-group', 'cancel-quick-contact'].forEach(id => 
+      document.getElementById(id).onclick = () => hideForm(id.split('-')[1] === 'edit' ? 'edit-group' : id.split('-')[1]));
+    
+    document.getElementById('save-contact').onclick = saveContact;
+    document.getElementById('save-group').onclick = saveGroup;
+    document.getElementById('save-edit-group').onclick = saveEditGroup;
+    document.getElementById('save-quick-contact').onclick = saveQuickContact;
+    document.getElementById('add-new-contact-btn').onclick = () => showForm('quick-contact');
+    document.getElementById('add-new-contact-edit-btn').onclick = () => {
+  // Affiche le formulaire d'ajout de contact rapide
+  document.getElementById('quick-contact-form').classList.remove('hidden');
+};
+    
+    elements.sendBtn.onclick = sendMessage;
+    elements.messageInput.onkeypress = e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage(); // Appeler la fonction pour envoyer le message
+      }
+    };
+    elements.search.oninput = handleSearch;
+    elements.search.onkeypress = handleSearchEnter;
+    document.getElementById('contact-phone').oninput = e => e.target.value = e.target.value.replace(/[^\d\s]/g, '');
+    document.getElementById('quick-contact-phone').oninput = e => e.target.value = e.target.value.replace(/[^\d\s]/g, '');
+  
     
 document.getElementById('add-diffusion-contact-btn').addEventListener('click', () => {
   showPopup('confirm', 'Ajouter un contact', 'Entrez le nom du contact à ajouter à la diffusion.', (name) => {
@@ -175,14 +188,13 @@ document.getElementById('add-diffusion-contact-btn').addEventListener('click', (
   });
 });
 
-// Gestion des cases à cocher
 document.getElementById('diffusion-contact-list').addEventListener('change', (e) => {
   if (e.target.classList.contains('diffusion-checkbox')) {
     const contactId = e.target.dataset.id;
     if (e.target.checked) {
-      state.selectedMembers.push(contactId); // Ajouter le contact sélectionné
+      state.selectedMembers.push(contactId); 
     } else {
-      state.selectedMembers = state.selectedMembers.filter(id => id !== contactId); // Retirer le contact
+      state.selectedMembers = state.selectedMembers.filter(id => id !== contactId); 
     }
   }
 });
@@ -216,7 +228,7 @@ document.getElementById('diffusion-contact-list').addEventListener('change', (e)
 
 document.getElementById('nav-diffusion').addEventListener('click', () => {
   document.getElementById('diffusion-form').classList.remove('hidden'); // Afficher le formulaire de diffusion
-  renderDiffusionContacts(); // Mettre à jour l'affichage des contacts
+  renderDiffusionContacts(); // Mettre à jour l'af
 });
 
   };
@@ -226,7 +238,6 @@ const handleSearch = e => {
   const items = getCurrentItems();
 
   if (searchTerm === '*') {
-    // Afficher tous les contacts par ordre alphabétique
     state.filteredItems = items.sort((a, b) => a.name.localeCompare(b.name));
   } else if (searchTerm === '') {
     // Réinitialiser la recherche
@@ -394,47 +405,51 @@ const handleSearch = e => {
 };
 
   const saveQuickContact = () => {
-    const [name, phone] = ['name', 'phone'].map(f => document.getElementById(`quick-contact-${f}`).value.trim());
-    
-    if (!name || !phone) return;
-    
-    if (!validatePhoneNumber(phone)) {
-      showPopup('error', 'Erreur', 'Le numéro de téléphone ne doit contenir que des chiffres.');
-      return;
-    }
-
-    if (phoneExists(phone)) {
-      showPopup('error', 'Erreur', 'Ce numéro de téléphone existe déjà.');
-      return;
-    }
-    
-    const uniqueName = generateUniqueName(name);
-    const contact = {
-      id: Date.now(), 
-      name: uniqueName, 
-      phone, 
-      type: 'contact',
-      lastMessage: 'Nouveau contact',
-      timestamp: formatTime(new Date()),
-      online: Math.random() > 0.5,
-      hasUnreadMessages: false
-    };
+  const [name, phone] = ['name', 'phone'].map(f => document.getElementById(`quick-contact-${f}`).value.trim());
   
-    data.contacts.push(contact);
-    data.messages[contact.id] = [];
-    state.selectedMembers.push(contact.id);
-    
-    saveData();
-    hideForm('quick-contact');
-    
-    if (elements.groupForm.classList.contains('hidden') && elements.editGroupForm.classList.contains('hidden')) {
-      render();
-    } else if (!elements.groupForm.classList.contains('hidden')) {
-      renderMembersList();
-    } else if (!elements.editGroupForm.classList.contains('hidden')) {
-      renderEditMembersList();
-    }
+  if (!name || !phone) return;
+  
+  if (!validatePhoneNumber(phone)) {
+    showPopup('error', 'Erreur', 'Le numéro de téléphone ne doit contenir que des chiffres.');
+    return;
+  }
+
+  if (phoneExists(phone)) {
+    showPopup('error', 'Erreur', 'Ce numéro de téléphone existe déjà.');
+    return;
+  }
+  
+  const uniqueName = generateUniqueName(name);
+  const contact = {
+    id: Date.now(), 
+    name: uniqueName, 
+    phone, 
+    type: 'contact',
+    lastMessage: 'Nouveau contact',
+    timestamp: formatTime(new Date()),
+    online: Math.random() > 0.5,
+    hasUnreadMessages: false
   };
+
+  data.contacts.push(contact);
+  data.messages[contact.id] = [];
+
+  // Ajouter le contact à la sélection des membres si on est dans l'édition d'un groupe
+  if (!elements.groupForm.classList.contains('hidden')) {
+    state.selectedMembers.push(contact.id);
+    renderMembersList();
+  } else if (!elements.editGroupForm.classList.contains('hidden')) {
+    state.selectedMembers.push(contact.id);
+    renderEditMembersList();
+  }
+
+  saveData();
+  hideForm('quick-contact');
+  
+  if (elements.groupForm.classList.contains('hidden') && elements.editGroupForm.classList.contains('hidden')) {
+    render();
+  }
+};
   
   const saveGroup = () => {
     const name = document.getElementById('group-name').value.trim();
@@ -903,3 +918,47 @@ elements.messageInput.onblur = () => {
   setupEvents();
   switchSection('contacts');
 });
+
+// Ajout de l'événement pour le bouton de sélection des contacts à diffuser
+document.getElementById('select-diffusion-contacts-btn').onclick = () => {
+  // Affiche la liste des contacts avec des cases à cocher dans la section diffusion
+  const list = document.getElementById('diffusion-contact-list');
+  list.innerHTML = ''; // Vider la liste avant de la remplir
+
+  if (!data.contacts.length) {
+    list.innerHTML = '<div class="text-center text-gray-500 text-sm">Aucun contact disponible.</div>';
+    return;
+  }
+
+  data.contacts.forEach(contact => {
+    const contactEl = document.createElement('div');
+    contactEl.className = 'w-full h-12 p-2 border-b-2 border-yellow-600 shadow flex items-center';
+    contactEl.innerHTML = `
+      <div class="flex-1">
+        <div class="text-sm font-semibold">${contact.name}</div>
+      </div>
+      <div>
+        <input type="checkbox" class="diffusion-checkbox" data-id="${contact.id}" ${data.diffusionContacts.some(c => c.id === contact.id) ? 'checked' : ''}/>
+      </div>
+    `;
+    list.appendChild(contactEl);
+  });
+
+  // Gestion des cases à cocher
+  list.querySelectorAll('.diffusion-checkbox').forEach(checkbox => {
+    checkbox.onchange = () => {
+      const contactId = checkbox.dataset.id;
+      if (checkbox.checked) {
+        // Ajouter le contact à la diffusion s'il n'y est pas déjà
+        if (!data.diffusionContacts.some(c => c.id === contactId)) {
+          const contact = data.contacts.find(c => c.id === contactId);
+          if (contact) data.diffusionContacts.push(contact);
+        }
+      } else {
+        // Retirer le contact de la diffusion
+        data.diffusionContacts = data.diffusionContacts.filter(c => c.id !== contactId);
+      }
+      saveData();
+    };
+  });
+};
