@@ -91,61 +91,21 @@ if(diffusionBtn) {
     elements.addGroupBtn.onclick = () => showForm('group');
     
     elements.archiveBtn.onclick = () => {
-      if (
-        state.currentChat &&
-        (state.currentChat.type === 'contact' || state.currentChat.type === 'group') &&
-        state.section === 'contacts'
-      ) {
-        showPopup(
-          'confirm',
-          'Archiver',
-          `Êtes-vous sûr de vouloir archiver "${state.currentChat.name}" ?`,
-          () => archiveAction(state.currentChat.id, false)
-        );
+      if (state.currentChat && state.currentChat.type === 'contact' && state.section === 'contacts') {
+        showPopup('confirm', 'Archiver le contact', `Êtes-vous sûr de vouloir archiver "${state.currentChat.name}" ?`, 
+          () => archiveAction(state.currentChat.id, false));
       } else {
-        showPopup('error', 'Erreur', 'Veuillez sélectionner un contact ou un groupe à archiver');
+        showPopup('error', 'Erreur', 'Veuillez sélectionner un contact à archiver');
       }
     };
 
-    elements.deleteContactBtn.onclick = () => {
-      if (
-        state.currentChat &&
-        (state.currentChat.type === 'contact' || state.currentChat.type === 'group')
-      ) {
-        showPopup(
-          'confirm',
-          'Supprimer',
-          `Êtes-vous sûr de vouloir supprimer "${state.currentChat.name}" ?`,
-          () => deleteContact(state.currentChat.id)
-        );
-      } else {
-        showPopup('error', 'Erreur', 'Veuillez sélectionner un contact ou un groupe à supprimer.');
-      }
-    };
-
-    document.getElementById('delete-messages-btn').onclick = () => {
-      if (
-        state.currentChat &&
-        (state.currentChat.type === 'contact' || state.currentChat.type === 'group') &&
-        data.messages[state.currentChat.id]
-      ) {
-        showPopup(
-          'confirm',
-          'Supprimer les messages',
-          `Voulez-vous vraiment supprimer tous les messages de "${state.currentChat.name}" ?`,
-          () => {
-            data.messages[state.currentChat.id] = [];
-            saveData();
-            renderMessages(state.currentChat.id);
-            renderContactsList();
-          }
-        );
-      } else {
-        showPopup('error', 'Erreur', 'Aucun contact ou groupe sélectionné.');
+    elements.editGroupBtn.onclick = () => {
+      if (state.currentChat && state.currentChat.type === 'group') {
+        showEditGroupForm();
       }
     };
     
-elements.showArchivesBtn.onclick = () => switchSection('archives');
+    elements.showArchivesBtn.onclick = () => switchSection('archives');
     
     ['cancel-contact', 'cancel-group', 'cancel-edit-group', 'cancel-quick-contact'].forEach(id => 
       document.getElementById(id).onclick = () => hideForm(id.split('-')[1] === 'edit' ? 'edit-group' : id.split('-')[1]));
@@ -171,7 +131,37 @@ elements.showArchivesBtn.onclick = () => switchSection('archives');
     elements.search.onkeypress = handleSearchEnter;
     document.getElementById('contact-phone').oninput = e => e.target.value = e.target.value.replace(/[^\d\s]/g, '');
     document.getElementById('quick-contact-phone').oninput = e => e.target.value = e.target.value.replace(/[^\d\s]/g, '');
-  
+    elements.deleteContactBtn = document.getElementById('delete-contact-btn');
+
+    elements.deleteContactBtn.onclick = () => {
+      if (state.currentChat && state.currentChat.type === 'contact') {
+        showPopup(
+          'confirm',
+          'Supprimer le contact',
+          `Êtes-vous sûr de vouloir supprimer "${state.currentChat.name}" ?`,
+          () => deleteContact(state.currentChat.id)
+        );
+      } else {
+        showPopup('error', 'Erreur', 'Veuillez sélectionner un contact à supprimer.');
+      }
+    };
+    document.getElementById('delete-messages-btn').onclick = () => {
+      if (state.currentChat && data.messages[state.currentChat.id]) {
+        showPopup(
+          'confirm',
+          'Supprimer les messages',
+          `Voulez-vous vraiment supprimer tous les messages de "${state.currentChat.name}" ?`,
+          () => {
+            data.messages[state.currentChat.id] = [];
+            saveData();
+            renderMessages(state.currentChat.id);
+            renderContactsList();
+          }
+        );
+      } else {
+        showPopup('error', 'Erreur', 'Aucun contact sélectionné.');
+      }
+    };
     
 document.getElementById('add-diffusion-contact-btn').addEventListener('click', () => {
   showPopup('confirm', 'Ajouter un contact', 'Entrez le nom du contact à ajouter à la diffusion.', (name) => {
