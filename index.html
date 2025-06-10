@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar gauche -->
+        <div class="w-1/3 bg-white border-r border-gray-200 flex flex-col">
+            <!-- Header -->
+            <div class="bg-gray-50 p-4 flex items-center justify-between border-b border-gray-200">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">36</div>
+                    </div>
+                    <h1 class="text-xl font-semibold text-gray-800">WhatsApp</h1>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="p-2 hover:bg-gray-200 rounded-full">
+                        <i class="fas fa-video text-gray-600"></i>
+                    </button>
+                    <button class="p-2 hover:bg-gray-200 rounded-full">
+                        <i class="fas fa-ellipsis-v text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Barre de recherche -->
+            <div class="p-4">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Rechercher ou démarrer une discussion" class="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg border-none outline-none text-sm">
+                </div>
+            </div>
+
+            <!-- Filtres -->
+            <div class="px-4 pb-4">
+                <div class="flex space-x-2">
+                    <button class="px-4 py-2 bg-green-100 text-green-600 rounded-full text-sm font-medium">Toutes</button>
+                    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm">Non lues</button>
+                    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm">Favoris</button>
+                    <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm">Groupes</button>
+                </div>
+            </div>
+
+            <!-- Liste des conversations -->
+            <div class="flex-1 overflow-y-auto">
+                <!-- Ndeye -->
+                <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer bg-gray-50">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="Ndeye" class="w-12 h-12 rounded-full object-cover">
+                    <div class="ml-3 flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-900">Ndeye</h3>
+                            <span class="text-xs text-gray-500">22:26</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-double text-blue-500 text-xs mr-1"></i>
+                            <i class="fas fa-microphone text-gray-500 text-xs mr-1"></i>
+                            <span class="text-sm text-gray-500">0:22</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fadiloulah -->
+                <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer">
+                    <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-gray-500"></i>
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-900">Fadiloulah......Hi✨🔥...</h3>
+                            <span class="text-xs text-gray-500">22:05</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone text-red-500 text-xs mr-1"></i>
+                            <span class="text-sm text-gray-500">Appel vocal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Développement Web Mobile L3 S5 -->
+                <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer">
+                    <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-white text-sm"></i>
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-900">Développement Web Mobile L3 S5</h3>
+                            <span class="text-xs text-gray-500">21:34</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm text-gray-900 font-medium">P9 IDA DEVELOPPEMENT WEB Mobile L3 ...</p>
+                                <p class="text-sm text-gray-500">~ Sokhna Faty: Slm Groupe projet yi yeup fess?</p>
+                            </div>
+                            <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ASKANOU M.MADJACKY.THIAM -->
+                <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="ASKANOU" class="w-12 h-12 rounded-full object-cover">
+                    <div class="ml-3 flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-900">ASKANOU M.MADJACKY.THIAM</h3>
+                            <span class="text-xs text-gray-500">21:13</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-500">~ Kadia Thiam: </span>
+                            <i class="fas fa-microphone text-green-500 text-xs ml-1 mr-1"></i>
+                            <span class="text-sm text-gray-500">0:38</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Promo 2025 ECSA -->
+                <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">E</span>
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-900">Promo 2025 ECSA</h3>
+                            <span class="text-xs text-gray-500">20:06</span>
+                        </div>
+                        <p class="text-sm text-gray-500">Ousseynou Odc: La note de service suivra ...</p>
+                    </div>
+                </div>
+
+                <!-- P7 dev web -->
+                <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer">
+                    <div class="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center">
+                        <i class="fas fa-users text-white text-sm"></i>
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-900">P7 dev web</h3>
+                            <span class="text-xs text-gray-500">17:26</span>
+                        </div>
+                        <p class="text-sm text-gray-500">~ Birane Baila Wane: Il reste l'adaptateur au niveau de la ...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone de chat principale -->
+        <div class="flex-1 flex flex-col">
+            <!-- Header du chat -->
+            <div class="bg-gray-50 p-4 border-b border-gray-200 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="Ndeye" class="w-10 h-10 rounded-full object-cover">
+                    <h2 class="font-semibold text-gray-900">Ndeye</h2>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="p-2 hover:bg-gray-200 rounded-full">
+                        <i class="fas fa-search text-gray-600"></i>
+                    </button>
+                    <button class="p-2 hover:bg-gray-200 rounded-full">
+                        <i class="fas fa-ellipsis-v text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Zone de messages -->
+            <div class="flex-1 p-4 overflow-y-auto" style="background-image: url('data:image/svg+xml,</svg>');">
+                <!-- Message reçu -->
+                <div class="mb-4">
+                    <div class="flex">
+                        <div class="bg-white rounded-lg p-3 max-w-xs shadow-sm">
+                            <p class="text-sm text-gray-800">Merci babeee</p>
+                            <span class="text-xs text-gray-500 mt-1 block">21:49</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages vocaux envoyés -->
+                <div class="mb-4 flex justify-end">
+                    <div class="bg-green-100 rounded-lg p-3 max-w-xs flex items-center space-x-2">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=24&h=24&fit=crop&crop=face" alt="Avatar" class="w-6 h-6 rounded-full">
+                        <button class="text-green-600 hover:text-green-700">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="flex-1">
+                            <div class="h-6 bg-green-300 rounded-full relative overflow-hidden">
+                                <div class="h-full bg-green-500 rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <span class="text-xs text-gray-600">0:07</span>
+                        <div class="flex items-center">
+                            <span class="text-xs text-gray-500 mr-1">21:54</span>
+                            <i class="fas fa-check-double text-blue-500 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4 flex justify-end">
+                    <div class="bg-green-100 rounded-lg p-3 max-w-xs flex items-center space-x-2">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=24&h=24&fit=crop&crop=face" alt="Avatar" class="w-6 h-6 rounded-full">
+                        <button class="text-green-600 hover:text-green-700">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="flex-1">
+                            <div class="h-6 bg-green-300 rounded-full relative overflow-hidden">
+                                <div class="h-full bg-green-500 rounded-full" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        <span class="text-xs text-gray-600">0:08</span>
+                        <div class="flex items-center">
+                            <span class="text-xs text-gray-500 mr-1">21:54</span>
+                            <i class="fas fa-check-double text-blue-500 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message vocal reçu -->
+                <div class="mb-4">
+                    <div class="flex">
+                        <div class="bg-white rounded-lg p-3 max-w-xs flex items-center space-x-2 shadow-sm">
+                            <button class="text-blue-600 hover:text-blue-700">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <div class="flex-1">
+                                <div class="h-6 bg-blue-300 rounded-full relative overflow-hidden">
+                                    <div class="h-full bg-blue-500 rounded-full" style="width: 20%"></div>
+                                </div>
+                            </div>
+                            <span class="text-xs text-gray-600">0:16</span>
+                            <span class="text-xs text-gray-500">22:11</span>
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=24&h=24&fit=crop&crop=face" alt="Avatar" class="w-6 h-6 rounded-full">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message vocal envoyé -->
+                <div class="mb-4 flex justify-end">
+                    <div class="bg-green-100 rounded-lg p-3 max-w-xs flex items-center space-x-2">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=24&h=24&fit=crop&crop=face" alt="Avatar" class="w-6 h-6 rounded-full">
+                        <button class="text-green-600 hover:text-green-700">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="flex-1">
+                            <div class="h-6 bg-green-300 rounded-full relative overflow-hidden">
+                                <div class="h-full bg-green-500 rounded-full" style="width: 35%"></div>
+                            </div>
+                        </div>
+                        <span class="text-xs text-gray-600">0:22</span>
+                        <div class="flex items-center">
+                            <span class="text-xs text-gray-500 mr-1">22:26</span>
+                            <i class="fas fa-check-double text-blue-500 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone de saisie -->
+            <div class="bg-gray-50 p-4 border-t border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <button class="p-2 hover:bg-gray-200 rounded-full">
+                        <i class="fas fa-plus text-gray-600"></i>
+                    </button>
+                    <button class="p-2 hover:bg-gray-200 rounded-full">
+                        <i class="fas fa-smile text-gray-600"></i>
+                    </button>
+                    <div class="flex-1">
+                        <input type="text" placeholder="Entrez un message" class="w-full px-4 py-2 bg-white rounded-full border border-gray-300 outline-none focus:border-green-500">
+                    </div>
+                    <button class="p-2 hover:bg-gray-200 rounded-full">
+                        <i class="fas fa-microphone text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

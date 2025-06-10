@@ -1,0 +1,116 @@
+{
+  "header": {
+    "title": "WhatsApp",
+    "unreadCount": 45
+  },
+  "searchPlaceholder": "Rechercher ou démarrer une discussion",
+  "tabs": [
+    {
+      "id": "all",
+      "label": "Toutes",
+      "active": true
+    },
+    {
+      "id": "unread",
+      "label": "Non lues",
+      "active": false
+    },
+    {
+      "id": "favorites",
+      "label": "Favoris",
+      "active": false
+    },
+    {
+      "id": "groups",
+      "label": "Groupes",
+      "active": false
+    }
+  ],
+  "conversations": [
+    {
+      "id": 1,
+      "name": "Ngo❤️",
+      "avatar": "/api/placeholder/40/40",
+      "lastMessage": "",
+      "time": "Hier",
+      "hasVoiceNote": true,
+      "voiceDuration": "0:38",
+      "isOnline": false,
+      "unreadCount": 0
+    },
+    {
+      "id": 2,
+      "name": "Wade family",
+      "avatar": "/api/placeholder/40/40",
+      "lastMessage": "~ Maguette Wade:",
+      "messageType": "photo",
+      "time": "Hier",
+      "hasVoiceNote": false,
+      "isOnline": false,
+      "unreadCount": 0
+    },
+    {
+      "id": 3,
+      "name": "Alter Ego⚡📧🦋❤️",
+      "avatar": "/api/placeholder/40/40",
+      "lastMessage": "",
+      "messageType": "sticker",
+      "time": "Hier",
+      "hasVoiceNote": false,
+      "isOnline": false,
+      "unreadCount": 0
+    },
+    {
+      "id": 4,
+      "name": "Bb Dior ❤️",
+      "avatar": "/api/placeholder/40/40",
+      "lastMessage": "",
+      "time": "Hier",
+      "hasVoiceNote": true,
+      "voiceDuration": "0:09",
+      "isOnline": false,
+      "unreadCount": 0
+    },
+    {
+      "id": 5,
+      "name": "ASKANOU M.MADIACKY.THIAM",
+      "avatar": "/api/placeholder/40/40",
+      "lastMessage": "~ Modou Bamba:",
+      "messageType": "sticker",
+      "time": "Hier",
+      "hasVoiceNote": false,
+      "isOnline": false,
+      "unreadCount": 0
+    },
+    {
+      "id": 6,
+      "name": "La famille parfait ❤️👨‍👩‍👧‍👦🏠 🥰",
+      "avatar": "/api/placeholder/40/40",
+      "lastMessage": "~ wadefatoumata69:",
+      "messageType": "media",
+      "mediaCount": "2 photos, 4 vidéos",
+      "time": "Hier",
+      "hasVoiceNote": false,
+      "isOnline": false,
+      "unreadCount": 0
+    },
+    {
+      "id": 7,
+      "name": "Wadial Magal 2025🏠💌🎭💞❤️😊",
+      "avatar": "/api/placeholder/40/40",
+      "lastMessage": "",
+      "time": "Hier",
+      "hasVoiceNote": false,
+      "isOnline": false,
+      "unreadCount": 0
+    }
+  ],
+  "businessPromo": {
+    "title": "WhatsApp Business sur le Web",
+    "subtitle": "Développez, organisez et gérez votre compte professionnel.",
+    "illustration": "turtle-with-arrow"
+  },
+  "encryption": {
+    "message": "Vos messages personnels sont chiffrés de bout en bout"
+  }
+}
