@@ -1,116 +1,71 @@
 {
-  "header": {
-    "title": "WhatsApp",
-    "unreadCount": 45
+  "user": {
+    "id": 1,
+    "name": "Mame Fatou Wade",
+    "email": "exemple@email.com",
+    "phone": "+221 77 123 45 67",
+    "avatar": "images/xxx.jpeg",
+    "password": "motdepasse"
   },
-  "searchPlaceholder": "Rechercher ou démarrer une discussion",
-  "tabs": [
-    {
-      "id": "all",
-      "label": "Toutes",
-      "active": true
-    },
-    {
-      "id": "unread",
-      "label": "Non lues",
-      "active": false
-    },
-    {
-      "id": "favorites",
-      "label": "Favoris",
-      "active": false
-    },
-    {
-      "id": "groups",
-      "label": "Groupes",
-      "active": false
-    }
-  ],
-  "conversations": [
-    {
-      "id": 1,
-      "name": "Ngo❤️",
-      "avatar": "/api/placeholder/40/40",
-      "lastMessage": "",
-      "time": "Hier",
-      "hasVoiceNote": true,
-      "voiceDuration": "0:38",
-      "isOnline": false,
-      "unreadCount": 0
-    },
+  "contacts": [
     {
       "id": 2,
-      "name": "Wade family",
-      "avatar": "/api/placeholder/40/40",
-      "lastMessage": "~ Maguette Wade:",
-      "messageType": "photo",
-      "time": "Hier",
-      "hasVoiceNote": false,
-      "isOnline": false,
-      "unreadCount": 0
+      "name": "Ababacar Diop Kounoune Parcelle",
+      "phone": "+221 77 234 56 78",
+      "avatar": "images/contact1.jpg",
+      "status": "Salut ! J’utilise WhatsApp."
     },
     {
       "id": 3,
-      "name": "Alter Ego⚡📧🦋❤️",
-      "avatar": "/api/placeholder/40/40",
-      "lastMessage": "",
-      "messageType": "sticker",
-      "time": "Hier",
-      "hasVoiceNote": false,
-      "isOnline": false,
-      "unreadCount": 0
+      "name": "Abdou Ahade Ferdor",
+      "phone": "+221 77 345 67 89",
+      "avatar": "images/contact2.jpg",
+      "status": "Salut ! J’utilise WhatsApp."
     },
     {
       "id": 4,
-      "name": "Bb Dior ❤️",
-      "avatar": "/api/placeholder/40/40",
-      "lastMessage": "",
-      "time": "Hier",
-      "hasVoiceNote": true,
-      "voiceDuration": "0:09",
-      "isOnline": false,
-      "unreadCount": 0
+      "name": "Abdou Diallo",
+      "phone": "+221 77 456 78 90",
+      "avatar": "images/contact3.jpg",
+      "status": "Salut ! J’utilise WhatsApp."
     },
     {
       "id": 5,
-      "name": "ASKANOU M.MADIACKY.THIAM",
-      "avatar": "/api/placeholder/40/40",
-      "lastMessage": "~ Modou Bamba:",
-      "messageType": "sticker",
-      "time": "Hier",
-      "hasVoiceNote": false,
-      "isOnline": false,
-      "unreadCount": 0
-    },
-    {
-      "id": 6,
-      "name": "La famille parfait ❤️👨‍👩‍👧‍👦🏠 🥰",
-      "avatar": "/api/placeholder/40/40",
-      "lastMessage": "~ wadefatoumata69:",
-      "messageType": "media",
-      "mediaCount": "2 photos, 4 vidéos",
-      "time": "Hier",
-      "hasVoiceNote": false,
-      "isOnline": false,
-      "unreadCount": 0
-    },
-    {
-      "id": 7,
-      "name": "Wadial Magal 2025🏠💌🎭💞❤️😊",
-      "avatar": "/api/placeholder/40/40",
-      "lastMessage": "",
-      "time": "Hier",
-      "hasVoiceNote": false,
-      "isOnline": false,
-      "unreadCount": 0
+      "name": "Abdou Faye",
+      "phone": "+221 77 567 89 01",
+      "avatar": "images/contact4.jpg",
+      "status": "Salut ! J’utilise WhatsApp."
     }
   ],
-  "businessPromo": {
-    "title": "WhatsApp Business sur le Web",
-    "subtitle": "Développez, organisez et gérez votre compte professionnel.",
-    "illustration": "turtle-with-arrow"
-  },
-  "encryption": {
-    "message": "Vos messages personnels sont chiffrés de bout en bout"
-  }
+  "chats": [
+    {
+      "id": 1,
+      "name": "Dev web mobile ODC App seul",
+      "type": "group",
+      "avatar": "images/group1.png",
+      "lastMessage": "Thierno: 📍 Sticker",
+      "time": "10:52",
+      "unread": 1,
+      "messages": [
+        {
+          "sender": "Thierno",
+          "content": "Salut tout le monde!",
+          "time": "10:30",
+          "isMe": false
+        },
+        {
+          "sender": "Moi",
+          "content": "Bonjour! Comment ça va?",
+          "time": "10:32",
+          "isMe": true
+        },
+        {
+          "sender": "Thierno",
+          "content": "📍 Position partagée",
+          "time": "10:52",
+          "isMe": false
+        }
+      ]
+    }
+  ]
 }

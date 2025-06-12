@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "json-server --watch data.json --port 3000"
+
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",

@@ -1,233 +1,234 @@
-// Ajouter ces imports en haut de votre main.js :
-import './style.css'
-import './data.json'
-// Variables globales
-let whatsappData = {};
+let currentUser = null;
+let currentChat = null;
+let appData = null;
+let isNewChatViewActive = false;
+
+// Configuration Tailwind
+
 
 // Fonction pour charger les données JSON
-async function loadData() {
+async function loadAppData() {
     try {
-        const response = await fetch('data.json');
-        whatsappData = await response.json();
-        initializeApp();
-    } catch (error) {
-        console.error('Erreur lors du chargement des données:', error);
-        // Données de fallback en cas d'erreur
-        whatsappData = {
-            header: { title: "WhatsApp", unreadCount: 45 },
-            searchPlaceholder: "Rechercher ou démarrer une discussion",
-            tabs: [
-                { id: "all", label: "Toutes", active: true },
-                { id: "unread", label: "Non lues", active: false },
-                { id: "favorites", label: "Favoris", active: false },
-                { id: "groups", label: "Groupes", active: false }
-            ],
-            conversations: [],
-            businessPromo: {
-                title: "WhatsApp Business sur le Web",
-                subtitle: "Développez, organisez et gérez votre compte professionnel."
-            },
-            encryption: {
-                message: "Vos messages personnels sont chiffrés de bout en bout"
-            }
-        };
-        initializeApp();
+        const response = await fetch('src/data.json')
+
+        if (!response.ok) throw new Error('Erreur lors du chargement des données');
+        appData = await response.json();
+        renderChatList();
+    } catch (e) {
+        console.warn('Impossible de charger les données JSON, utilisation des données de secours.');
+        setupFallbackData();
+        renderChatList();
     }
 }
 
-// Fonction pour initialiser l'application
-function initializeApp() {
-    updateHeader();
-    updateSearchPlaceholder();
-    renderTabs();
-    renderConversations();
-    updateBusinessPromo();
-    updateEncryptionMessage();
-    
-    // Initialiser les icônes Lucide
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-}
+// Initialisation de l'application
+document.addEventListener('DOMContentLoaded', function() {
+    loadAppData();
+    setupEventListeners();
+});
 
-// Fonction pour mettre à jour l'en-tête
-function updateHeader() {
-    const titleElement = document.getElementById('app-title');
-    const unreadCountElement = document.getElementById('unread-count');
-    
-    if (titleElement) {
-        titleElement.textContent = whatsappData.header.title;
-    }
-    
-    if (unreadCountElement) {
-        unreadCountElement.textContent = whatsappData.header.unreadCount;
-    }
-}
-
-// Fonction pour mettre à jour le placeholder de recherche
-function updateSearchPlaceholder() {
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-        searchInput.placeholder = whatsappData.searchPlaceholder;
-    }
-}
-
-// Fonction pour rendre les onglets
-function renderTabs() {
-    const tabsContainer = document.getElementById('tabs-container');
-    if (!tabsContainer) return;
-    
-    tabsContainer.innerHTML = '';
-    
-    whatsappData.tabs.forEach(tab => {
-        const tabElement = document.createElement('button');
-        tabElement.className = `px-4 py-2 rounded-full text-sm font-medium ${
-            tab.active
-                ? 'bg-green-100 text-green-700'
-                : 'text-gray-600 hover:bg-gray-100'
-        }`;
-        tabElement.textContent = tab.label;
-        tabElement.onclick = () => handleTabClick(tab.id);
+// Données de secours
+function setupFallbackData() {
+    appData = {
+        users: [
+            { id: 1, username: 'admin', password: 'admin123', name: 'Administrateur' },
+            { id: 2, username: 'user1', password: 'pass123', name: 'Utilisateur 1' }
+        ]
         
-        tabsContainer.appendChild(tabElement);
+    };
+}
+
+// Configuration des événements
+function setupEventListeners() {
+    // Bouton nouvelle discussion
+    document.getElementById('new-chat-btn').addEventListener('click', showNewChatView);
+    
+    // Bouton retour
+    document.getElementById('back-to-chats').addEventListener('click', showConversationsView);
+    
+    // Recherche de contacts
+    document.getElementById('contact-search').addEventListener('input', filterContacts);
+    
+    // Clics sur les contacts
+    document.addEventListener('click', function(e) {
+        const contactItem = e.target.closest('.contact-item');
+        if (contactItem && contactItem.dataset.name) {
+            startNewConversation(contactItem.dataset.name, contactItem.dataset.phone);
+        }
     });
 }
 
-// Fonction pour rendre les conversations
-function renderConversations() {
-    const conversationsContainer = document.getElementById('conversations-container');
-    if (!conversationsContainer) return;
+// Afficher la vue nouvelle discussion
+function showNewChatView() {
+    document.getElementById('conversations-view').classList.add('hidden');
+    document.getElementById('new-chat-view').classList.remove('hidden');
+    isNewChatViewActive = true;
     
-    conversationsContainer.innerHTML = '';
+    // Focus sur la barre de recherche
+    setTimeout(() => {
+        document.getElementById('contact-search').focus();
+    }, 100);
+}
+
+// Afficher la vue des conversations
+function showConversationsView() {
+    document.getElementById('new-chat-view').classList.add('hidden');
+    document.getElementById('conversations-view').classList.remove('hidden');
+    isNewChatViewActive = false;
     
-    whatsappData.conversations.forEach(conversation => {
-        const conversationElement = document.createElement('div');
-        conversationElement.className = 'px-4 py-3 hover:bg-gray-50 cursor-pointer';
-        conversationElement.onclick = () => handleConversationClick(conversation.id);
+    // Nettoyer la recherche
+    document.getElementById('contact-search').value = '';
+    filterContacts();
+}
+
+// Filtrer les contacts
+function filterContacts() {
+    const searchTerm = document.getElementById('contact-search').value.toLowerCase();
+    const contactItems = document.querySelectorAll('.contact-item');
+    
+    contactItems.forEach(item => {
+        const name = item.querySelector('.font-semibold').textContent.toLowerCase();
+        const phone = item.dataset.phone ? item.dataset.phone.toLowerCase() : '';
         
-        conversationElement.innerHTML = `
-            <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 bg-gray-300 rounded-full flex-shrink-0"></div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-medium text-gray-900 truncate">
-                            ${conversation.name}
-                        </h3>
-                        <span class="text-xs text-gray-500">${conversation.time}</span>
-                    </div>
-                    <div class="flex items-center space-x-1 mt-1">
-                        ${renderConversationContent(conversation)}
+        const isVisible = name.includes(searchTerm) || phone.includes(searchTerm);
+        item.style.display = isVisible ? 'flex' : 'none';
+    });
+}
+
+// Démarrer une nouvelle conversation
+function startNewConversation(contactName, contactPhone) {
+    // Vérifier si une conversation existe déjà avec ce contact
+    let existingChat = appData.chats.find(chat => 
+        chat.name === contactName || chat.phone === contactPhone
+    );
+    
+    if (!existingChat) {
+        // Créer une nouvelle conversation
+        const newChat = {
+            id: Date.now(),
+            name: contactName,
+            phone: contactPhone,
+            lastMessage: "Nouvelle conversation",
+            time: getCurrentTime(),
+            unread: 0,
+            type: "contact",
+            avatar: contactName.charAt(0).toUpperCase(),
+            messages: []
+        };
+        
+        appData.chats.unshift(newChat);
+        existingChat = newChat;
+    }
+    
+    // Retourner à la vue des conversations et ouvrir le chat
+    showConversationsView();
+    renderChatList();
+    openChat(existingChat);
+    
+    showNotification(`Conversation avec ${contactName} ouverte`, 'success');
+}
+
+// Rendu de la liste des conversations
+function renderChatList() {
+    const chatList = document.getElementById('conversations-list');
+    chatList.innerHTML = '';
+
+    appData.chats.forEach(chat => {
+        const chatElement = createChatElement(chat);
+        chatList.appendChild(chatElement);
+    });
+}
+
+// Création d'un élément de conversation
+function createChatElement(chat) {
+    const chatElement = document.createElement('div');
+    chatElement.className = 'p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-all duration-200 chat-item animate-fadeIn';
+    chatElement.onclick = () => openChat(chat);
+
+    const avatarColor = getAvatarColor(chat.type);
+    const unreadBadge = chat.unread > 0 ? 
+        `<div class="bg-whatsapp text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">${chat.unread}</div>` : '';
+
+    chatElement.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 ${avatarColor} rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                ${chat.avatar}
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-start">
+                    <h3 class="font-semibold text-gray-900 truncate">${chat.name}</h3>
+                    <div class="flex flex-col items-end space-y-1">
+                        <span class="text-xs text-gray-500">${chat.time}</span>
+                        ${unreadBadge}
                     </div>
                 </div>
+                <p class="text-sm text-gray-600 truncate mt-1">${chat.lastMessage}</p>
             </div>
-        `;
-        
-        conversationsContainer.appendChild(conversationElement);
+        </div>
+    `;
+
+    return chatElement;
+}
+
+// Obtenir la couleur de l'avatar selon le type
+function getAvatarColor(type) {
+    return type === 'group' ? 'bg-blue-500' : 'bg-green-500';
+}
+
+// Ouverture d'une conversation
+function openChat(chat) {
+    currentChat = chat;
+    console.log('Chat ouvert:', chat.name);
+    showNotification(`Chat avec ${chat.name} ouvert`, 'info');
+}
+
+// Obtenir l'heure actuelle formatée
+function getCurrentTime() {
+    return new Date().toLocaleTimeString('fr-FR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
     });
 }
 
-// Fonction pour rendre le contenu d'une conversation
-function renderConversationContent(conversation) {
-    let content = '';
+// Affichage des notifications
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 animate-fadeIn ${getNotificationClass(type)}`;
+    notification.textContent = message;
     
-    if (conversation.hasVoiceNote) {
-        content += `
-            <div class="w-3 h-3 text-green-600">
-                <svg viewBox="0 0 12 12" fill="currentColor">
-                    <path d="M6 1a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0V2a1 1 0 0 1 1-1zM3 6a3 3 0 1 1 6 0v1H3V6z"/>
-                </svg>
-            </div>
-            <span class="text-xs text-gray-500">${conversation.voiceDuration}</span>
-        `;
-    }
+    document.body.appendChild(notification);
     
-    if (conversation.messageType === 'photo') {
-        content += `
-            <i data-lucide="camera" class="w-3 h-3 text-gray-500"></i>
-            <span class="text-xs text-gray-500">Photo</span>
-        `;
-    }
-    
-    if (conversation.messageType === 'sticker') {
-        content += `
-            <div class="w-3 h-3 text-gray-500">😊</div>
-            <span class="text-xs text-gray-500">Sticker</span>
-        `;
-    }
-    
-    if (conversation.messageType === 'media' && conversation.mediaCount) {
-        content += `<span class="text-xs text-gray-500">${conversation.mediaCount}</span>`;
-    }
-    
-    if (conversation.lastMessage) {
-        content += `<span class="text-xs text-gray-500 truncate">${conversation.lastMessage}</span>`;
-    }
-    
-    return content;
+    setTimeout(() => {
+        notification.classList.add('animate-fadeOut');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
-// Fonction pour mettre à jour la promotion business
-function updateBusinessPromo() {
-    const businessTitle = document.getElementById('business-title');
-    const businessSubtitle = document.getElementById('business-subtitle');
-    
-    if (businessTitle) {
-        businessTitle.textContent = whatsappData.businessPromo.title;
+// Classes CSS pour les notifications
+function getNotificationClass(type) {
+    const classes = {
+        success: 'bg-green-500 text-white',
+        error: 'bg-red-500 text-white',
+        warning: 'bg-yellow-500 text-black',
+        info: 'bg-blue-500 text-white'
+    };
+    return classes[type] || classes.info;
+}
+
+// Raccourcis clavier
+document.addEventListener('keydown', function(e) {
+    // Échap pour retourner aux conversations depuis la vue nouvelle discussion
+    if (e.key === 'Escape' && isNewChatViewActive) {
+        showConversationsView();
     }
     
-    if (businessSubtitle) {
-        businessSubtitle.textContent = whatsappData.businessPromo.subtitle;
-    }
-}
-
-// Fonction pour mettre à jour le message de chiffrement
-function updateEncryptionMessage() {
-    const encryptionMessage = document.getElementById('encryption-message');
-    if (encryptionMessage) {
-        encryptionMessage.textContent = whatsappData.encryption.message;
-    }
-}
-
-// Gestionnaire de clic sur les onglets
-function handleTabClick(tabId) {
-    // Mettre à jour l'état actif des onglets
-    whatsappData.tabs.forEach(tab => {
-        tab.active = tab.id === tabId;
-    });
-    
-    // Re-rendre les onglets
-    renderTabs();
-    
-    // Ici vous pourriez ajouter la logique pour filtrer les conversations
-    console.log('Onglet sélectionné:', tabId);
-}
-
-// Gestionnaire de clic sur les conversations
-function handleConversationClick(conversationId) {
-    console.log('Conversation sélectionnée:', conversationId);
-    // Ici vous pourriez ajouter la logique pour ouvrir la conversation
-}
-
-// Gestionnaire de recherche
-function handleSearch(query) {
-    console.log('Recherche:', query);
-    // Ici vous pourriez ajouter la logique de recherche
-}
-
-// Ajouter un écouteur d'événement pour la recherche
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            handleSearch(e.target.value);
-        });
+    // Ctrl/Cmd + N pour nouvelle discussion
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        if (!isNewChatViewActive) {
+            showNewChatView();
+        }
     }
 });
 
-// Initialiser l'application au chargement de la page
-document.addEventListener('DOMContentLoaded', loadData);
-
-// Fonction utilitaire pour déboguer
-function debugData() {
-    console.log('Données WhatsApp:', whatsappData);
-}
+console.log('WhatsApp Clone avec Nouvelle Discussion - Chargé avec succès !');
