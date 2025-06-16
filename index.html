@@ -9,11 +9,35 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <!-- Script de vérification d'authentification -->
+    <script>
+        // Vérifier l'authentification avant de charger l'application
+        (function() {
+            const token = localStorage.getItem('whatsapp_token');
+            const userData = localStorage.getItem('whatsapp_user');
+            
+            if (!token || !userData) {
+                // Rediriger vers la page de connexion
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                window.currentUser = JSON.parse(userData);
+                window.isLoggedIn = true;
+            } catch (error) {
+                console.error('Erreur lors de la récupération des données utilisateur:', error);
+                localStorage.removeItem('whatsapp_token');
+                localStorage.removeItem('whatsapp_user');
+                window.location.href = 'login.html';
+            }
+        })();
+    </script>
+
     <!-- Sidebar -->
 <div class="flex h-screen">
   <aside class="bg-gray-50 w-20 flex flex-col items-center py-4 border-r h-screen">
     <div class="relative mb-6">
-      <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full px-2">52</span>
         <!-- Icône WhatsApp -->
       <button class="p-2 rounded hover:bg-gray-200">
         <i class="fa-solid fa-message text-2xl"></i>
@@ -36,15 +60,19 @@
 
     </button>
 
-    <!-- Espace qui pousse les éléments suivants vers le bas -->
+    <!-- Espace qui pousse les éléments suivants v  ers le bas -->
     <div class="flex-1"></div>
     <!-- Icône paramètres en bas -->
-    <button class="p-2 rounded hover:bg-gray-200 mb-2">
+    <button class="p-2 rounded hover:bg-gray-200 mb-2" title="Paramètres">
       <i class="fa-solid fa-gear text-2xl"></i>
+    </button>
+    <!-- Bouton de déconnexion -->
+    <button id="logoutBtn" class="p-2 rounded hover:bg-red-200 mb-2 text-red-600" title="Déconnexion">
+      <i class="fa-solid fa-sign-out-alt text-2xl"></i>
     </button>
     <!-- Avatar utilisateur tout en bas -->
     <div>
-      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%234F46E5'/%3E%3Ctext x='20' y='26' font-family='Arial' font-size='16' font-weight='bold' text-anchor='middle' fill='white'%3EM%3C/text%3E%3C/svg%3E" alt="User" class="w-10 h-10 rounded-full border-2 border-gray-300">
+      <img src="images/xxx.jpeg" alt="User" class="w-10 h-10 rounded-full border-2 border-gray-300">
     </div>
   </aside>
 
@@ -114,13 +142,12 @@
           </div>
 
           <!-- Nouveau contact -->
-          <div id="new-contact-btn" class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
-            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-              <i class="fa-solid fa-user-plus text-white text-lg"></i>
-            </div>
-            <span class="text-lg font-medium">Nouveau contact</span>
-          </div>
-        </div>
+        <div class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer" id="new-contact-btn">
+  <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+    <i class="fa-solid fa-user-plus text-white text-lg"></i>
+  </div>
+  <span class="text-lg font-medium">Nouveau contact</span>
+</div>
 
         <!-- Section Contacts -->
         <div class="flex-1 overflow-y-auto">
@@ -133,169 +160,239 @@
             <!-- Contact Mame Fatou Wade -->
             <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer contact-item">
               <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23E0E7FF'/%3E%3Ctext x='24' y='30' font-family='Arial' font-size='18' font-weight='bold' text-anchor='middle' fill='%234F46E5'%3EM%3C/text%3E%3C/svg%3E" alt="Mame Fatou Wade" class="w-12 h-12 rounded-full mr-3">
-              <div class="flex-1">
-                <div class="font-semibold text-gray-900">Mame Fatou Wade</div>
-                <div class="text-sm text-gray-500">(vous)</div>
-                <div class="text-sm text-gray-400">Envoyez-vous un message</div>
-              </div>
+              
             </div>
 
             <!-- Section A -->
             <div class="px-4 py-2 bg-gray-50">
               <h4 class="text-sm font-medium text-gray-600">A</h4>
             </div>
-
-            <!-- Les contacts seront générés dynamiquement ici -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Vue formulaire nouveau contact -->
-      <div id="contact-form-view" class="hidden flex flex-col h-full bg-white">
-        <!-- En-tête -->
-        <div class="flex items-center justify-between p-4 border-b">
-          <div class="flex items-center">
-            <button id="back-from-form" class="p-2 rounded hover:bg-gray-200 mr-3">
-              <i class="fa-solid fa-times text-xl"></i>
-            </button>
-            <h1 class="text-xl font-semibold">Créer un contact</h1>
-          </div>
-          <button id="save-contact-btn" class="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors">
-            Enregistrer
-          </button>
-          <button class="p-2 rounded hover:bg-gray-200">
-            <i class="fa-solid fa-ellipsis-v"></i>
-          </button>
-        </div>
-
-        <!-- Formulaire -->
-        <div class="flex-1 overflow-y-auto p-6">
-          <!-- Section Photo -->
-          <div class="flex flex-col items-center mb-8">
-            <div class="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center mb-4 cursor-pointer hover:bg-blue-200 transition-colors" id="avatar-placeholder">
-              <i class="fa-solid fa-image-portrait text-4xl text-blue-500"></i>
-            </div>
-            <button class="text-blue-500 font-medium hover:text-blue-600 transition-colors">
-              Ajouter une image
-            </button>
-          </div>
-
-          <!-- Formulaire -->
-          <form id="contact-form" class="space-y-6">
-            <!-- Prénom -->
-            <div>
-              <input 
-                type="text" 
-                id="first-name"
-                placeholder="Prénom"
-                class="w-full px-0 py-3 border-0 border-b border-gray-300 focus:border-blue-500 focus:outline-none text-lg placeholder-gray-500"
-                required
-              >
-            </div>
-
-            <!-- Prénom phonétique -->
-            <div>
-              <input 
-                type="text" 
-                id="phonetic-first-name"
-                placeholder="Prénom phonétique"
-                class="w-full px-0 py-3 border-0 border-b border-gray-300 focus:border-blue-500 focus:outline-none text-lg placeholder-gray-500"
-              >
-            </div>
-
-            <!-- Nom -->
-            <div>
-              <input 
-                type="text" 
-                id="last-name"
-                placeholder="Nom"
-                class="w-full px-0 py-3 border-0 border-b border-gray-300 focus:border-blue-500 focus:outline-none text-lg placeholder-gray-500"
-                required
-              >
-            </div>
-
-            <!-- Nom phonétique -->
-            <div>
-              <input 
-                type="text" 
-                id="phonetic-last-name"
-                placeholder="Nom phonétique"
-                class="w-full px-0 py-3 border-0 border-b border-gray-300 focus:border-blue-500 focus:outline-none text-lg placeholder-gray-500"
-              >
-            </div>
-
-            <!-- Entreprise -->
-            <div>
-              <input 
-                type="text" 
-                id="company"
-                placeholder="Entreprise"
-                class="w-full px-0 py-3 border-0 border-b border-gray-300 focus:border-blue-500 focus:outline-none text-lg placeholder-gray-500"
-              >
-            </div>
-
-            <!-- Téléphone -->
-            <div>
-              <label class="text-sm text-gray-600 block mb-2">Téléphone (Mobile)</label>
-              <div class="flex items-center border-b border-gray-300 focus-within:border-blue-500">
-                <div class="flex items-center pr-3">
-                  <span class="mr-2">🇸🇳</span>
-                  <span class="text-lg">+221</span>
-                  <i class="fa-solid fa-caret-down ml-2 text-gray-400"></i>
-                </div>
-                <input 
-                  type="tel" 
-                  id="phone"
-                  placeholder=""
-                  class="flex-1 px-0 py-3 border-0 focus:outline-none text-lg"
-                  required
-                >
-                <button type="button" class="p-2 text-red-500 hover:bg-red-50 rounded-full">
-                  <i class="fa-solid fa-minus-circle"></i>
-                </button>
+            <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer contact-item">
+              <div class="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center mr-3">
+                <i class="fa-solid fa-user text-white text-lg"></i>
               </div>
+              
             </div>
-
-            <!-- Ajouter numéro -->
-            <div>
-              <button type="button" class="text-blue-500 font-medium hover:text-blue-600 transition-colors">
-                Ajouter un numéro de tél.
-              </button>
+        
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </section>
+<!-- Vue formulaire d'ajout de contact (à ajouter après la div id="new-chat-view") -->
+<div id="add-contact-view" class="hidden flex flex-col h-full bg-white">
+  <!-- En-tête -->
+  <div class="flex items-center justify-between p-4 border-b">
+    <div class="flex items-center">
+      <button id="back-to-new-chat" class="p-2 rounded hover:bg-gray-200 mr-3">
+        <i class="fa-solid fa-arrow-left text-xl"></i>
+      </button>
+      <h1 class="text-xl font-semibold">Créer un contact</h1>
+    </div>
+    <button class="p-2 rounded hover:bg-gray-200">
+      <i class="fa-solid fa-ellipsis-v"></i>
+    </button>
+  </div>
 
+  <!-- Corps du formulaire -->
+  <div class="flex-1 overflow-y-auto">
+    <form id="addContactForm" class="h-full">
+      <!-- Section photo de profil -->
+      <div class="flex justify-center py-8 bg-gray-50 border-b">
+        <div class="relative">
+          <div class="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+            <i class="fa-solid fa-image text-4xl text-blue-400"></i>
+          </div>
+          <label for="contactAvatar" class="absolute bottom-2 right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-700 cursor-pointer">
+            <i class="fa-solid fa-plus text-sm"></i>
+          </label>
+          <input type="file" id="contactAvatar" accept="image/*" class="hidden">
+        </div>
+      </div>
+      
+      <div class="text-center py-4">
+        <span class="text-blue-600 font-medium">Ajouter une image</span>
+      </div>
+
+      <!-- Formulaire -->
+      <div class="px-6 space-y-6">
+        <!-- Prénom -->
+        <div class="space-y-2">
+          <input 
+            type="text" 
+            id="prenom"
+            name="prenom"
+            placeholder="Prénom" 
+            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
+            required
+          >
+        </div>
+
+        <!-- Prénom phonétique -->
+        <div class="space-y-2">
+          <input 
+            type="text" 
+            id="prenom-phonetique"
+            name="prenom-phonetique"
+            placeholder="Prénom phonétique" 
+            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
+          >
+        </div>
+
+        <!-- Nom -->
+        <div class="space-y-2">
+          <input 
+            type="text" 
+            id="nom"
+            name="nom"
+            placeholder="Nom" 
+            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
+            required
+          >
+        </div>
+
+        <!-- Nom phonétique -->
+        <div class="space-y-2">
+          <input 
+            type="text" 
+            id="nom-phonetique"
+            name="nom-phonetique"
+            placeholder="Nom phonétique" 
+            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
+          >
+        </div>
+
+        <!-- Entreprise -->
+        <div class="space-y-2">
+          <input 
+            type="text" 
+            id="entreprise"
+            name="entreprise"
+            placeholder="Entreprise" 
+            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
+          >
+        </div>
+
+        <!-- Téléphone -->
+        <div class="space-y-2">
+          <label class="text-sm text-gray-500 font-medium">Téléphone (Mobile)</label>
+          <div class="flex items-center border-b-2 border-gray-200 focus-within:border-blue-600">
+            <!-- Sélecteur de pays -->
+            <div class="flex items-center pr-3 border-r border-gray-200">
+              <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+            </div>
+            <span class="px-3 text-lg">+221</span>
+            <input 
+              type="tel" 
+              id="phone"
+              name="phone"
+              placeholder="77 123 45 67"
+              class="flex-1 py-3 focus:outline-none text-lg bg-transparent"
+              required
+            >
+            <button type="button" class="p-2 text-red-500 hover:bg-red-50 rounded">
+              <i class="fa-solid fa-minus-circle"></i>
+            </button>
+          </div>
+        </div>
+
+        
+
+        <!-- Message d'erreur -->
+        <div id="addContactError" class="text-red-500 text-sm hidden"></div>
+
+        <!-- Boutons d'action -->
+        <div class="flex justify-end space-x-3 pt-6 pb-8">
+          <button 
+            type="button" 
+            id="cancelContactBtn"
+            class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+          >
+            Annuler
+          </button>
+          <button 
+            type="submit" 
+            id="saveContactBtn"
+            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+          >
+            Enregistrer
+          </button>
+        </div>
+      </div>
+    </form>
+￼
+  </div>
+</div>
     <!-- Chat area -->
     <section class="flex-1 flex flex-col bg-gray-50">
       <header class="flex items-center justify-between p-4 border-b">
-        <div class="flex items-center gap-3">
-          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%234F46E5'/%3E%3Ctext x='20' y='26' font-family='Arial' font-size='16' font-weight='bold' text-anchor='middle' fill='white'%3EM%3C/text%3E%3C/svg%3E" alt="MB" class="w-10 h-10 rounded-full border">
-          <span class="font-semibold text-lg">+221 77 744 70 25</span>
-        </div>
-        <div class="flex items-center gap-4">
-          <button><i class="fa-solid fa-search"></i></button>
-          <button><i class="fa-solid fa-ellipsis-v"></i></button>
-        </div>
-      </header>
-      <div class="flex-1 overflow-y-auto p-6" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2740%27 height=%2740%27 viewBox=%270 0 40 40%27%3E%3Cg fill=%27%23f3f4f6%27 fill-opacity=%270.1%27%3E%3Cpath d=%27M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z%27/%3E%3C/g%3E%3C/svg%3E'); background-size: 40px 40px;">
-        <div class="flex flex-col items-center">
-          <div class="self-end bg-green-100 px-3 py-2 rounded-lg mb-2 max-w-xs">
-            Merci bcp
-            <span class="text-xs text-gray-500 ml-2">07:43 <i class="fa-solid fa-check-double text-green-500"></i></span>
-          </div>
-        </div>
+  <div class="flex items-center gap-3">
+    <img id="chat-header-avatar" src="images/xxx.jpeg" alt="Avatar" class="w-10 h-10 rounded-full border">
+    <span id="chat-header-name" class="font-semibold text-lg"></span>
+  </div>
+  <div class="flex items-center gap-4">
+    <button><i class="fa-solid fa-search"></i></button>
+    <div class="relative">
+  <button id="chat-menu-btn" class="p-2 rounded hover:bg-gray-100">
+    <i class="fa-solid fa-ellipsis-v"></i>
+  </button>
+  <div id="chat-menu-dropdown" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50 hidden">
+    <button id="delete-contact-btn" class="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600">Supprimer le contact</button>
+  </div>
+</div>
+  </div>
+</header>
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-6" style="background-image: url('images/whatsapp-bg.png'); background-size: cover;">
+        <!-- Les messages s'afficheront ici -->
       </div>
       <footer class="p-4 border-t flex items-center gap-2 bg-white">
-        <button class="p-2"><i class="fa-solid fa-plus"></i></button>
-        <input type="text" placeholder="Entrez un message" class="flex-1 px-3 py-2 rounded-full bg-gray-100 focus:outline-none">
-        <button class="p-2"><i class="fa-solid fa-microphone"></i></button>
+        <button class="p-2 text-gray-600 hover:text-gray-700">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+        <div class="flex-1 flex items-center bg-gray-100 rounded-full px-3">
+            <input 
+                type="text" 
+                placeholder="Entrez un message" 
+                class="flex-1 py-2 bg-transparent focus:outline-none"
+                maxlength="1000"
+            >
+            <button class="p-1 text-gray-600 hover:text-gray-700">
+                <i class="fa-solid fa-face-smile"></i>
+            </button>
+        </div>
+        <!-- Le bouton d'envoi sera ajouté dynamiquement par JavaScript -->
+        <button class="p-2 text-gray-600 hover:text-gray-700">
+            <i class="fa-solid fa-microphone"></i>
+        </button>
       </footer>
     </section>
   </main>
 </div>
 
+    <!-- Vue Ajout de Contact -->
+<div id="add-contact-view" class="hidden">
+    <div class="bg-white border-b border-gray-200 p-4">
+        <div class="flex items-center space-x-4">
+            <button id="back-to-new-chat" class="text-gray-600 hover:text-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+           </div>
+    </div>
+    
+  </div>
+
+  <!-- Popup de confirmation personnalisée -->
+<div id="custom-popup" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl p-6 shadow-lg max-w-xs w-full text-center">
+    <div id="custom-popup-message" class="mb-4 text-gray-800"></div>
+    <div class="flex justify-center gap-4">
+      <button id="custom-popup-cancel" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700">Annuler</button>
+      <button id="custom-popup-ok" class="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white">Confirmer</button>
+    </div>
+  </div>
+</div>
 
     <script type="module" src="src/main.js"></script>
  

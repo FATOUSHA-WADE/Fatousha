@@ -1,0 +1,1348 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Styles personnalisés pour l'application WhatsApp */
+
+/* Styles pour les notifications */
+.notification {
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideInRight 0.3s ease-out forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification-close {
+    transition: all 0.2s ease;
+}
+
+.notification-close:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Styles pour améliorer l'accessibilité */
+.contact-item-delete-mode:focus {
+    outline: 2px solid #ef4444;
+    outline-offset: 2px;
+}
+
+.contact-checkbox:focus {
+    outline: 2px solid #ef4444;
+    outline-offset: 2px;
+}
+
+/* Animation pour le compteur de sélection */
+#selected-count {
+    transition: all 0.2s ease;
+}
+
+/* Styles pour les états de chargement */
+.loading-contacts {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading-contacts::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ef4444;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Styles pour les messages */
+.message-bubble {
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.message-own {
+    background: linear-gradient(135deg, #dcf8c6 0%, #d4f4c1 100%);
+}
+
+.message-other {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+}
+
+/* Styles pour les avatars */
+.avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    background: #10b981;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+/* Styles pour la recherche */
+.search-highlight {
+    background-color: #fef3c7;
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+
+/* Styles pour les formulaires */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-input {
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Styles pour les boutons */
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+/* Styles pour les contacts */
+.contact-item {
+    transition: all 0.2s ease-in-out;
+}
+
+.contact-item:hover {
+    background-color: #f9fafb;
+    transform: translateX(2px);
+}
+
+.contact-item.selected {
+    background-color: #eff6ff;
+    border-left: 3px solid #3b82f6;
+}
+
+/* Styles pour le mode suppression de contacts */
+.delete-mode-active {
+    background-color: #fef2f2;
+    border-left: 4px solid #ef4444;
+}
+
+/* Styles pour le menu déroulant */
+#dropdown-menu {
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Styles pour les éléments du menu */
+#dropdown-menu button {
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+#dropdown-menu button:hover {
+    background-color: #f9fafb;
+}
+
+#dropdown-menu button:active {
+    background-color: #f3f4f6;
+}
+
+/* Styles pour le mode suppression */
+.delete-mode-header {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    transition: all 0.3s ease;
+}
+
+.contact-item-delete-mode {
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.contact-item-delete-mode:hover {
+    background-color: #fef2f2;
+    transform: translateX(2px);
+}
+
+.contact-item-delete-mode.selected {
+    background-color: #fee2e2;
+    border-left: 3px solid #ef4444;
+    transform: translateX(4px);
+}
+
+/* Animation pour les checkboxes */
+.contact-checkbox {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.contact-checkbox:hover {
+    border-color: #ef4444;
+    transform: scale(1.1);
+}
+
+.contact-checkbox.checked {
+    animation: checkboxPop 0.3s ease-out;
+}
+
+@keyframes checkboxPop {
+    0% {
+        transform: scale(0.8);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Styles pour les actions flottantes */
+.delete-mode-actions {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.delete-mode-actions button {
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.delete-mode-actions button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.delete-mode-actions button:active {
+    transform: translateY(0);
+}
+
+/* Responsive pour les petits écrans */
+@media (max-width: 640px) {
+    .delete-mode-actions {
+        left: 10px;
+        right: 10px;
+        transform: none;
+        flex-direction: column;
+    }
+    
+    .delete-mode-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animation d'entrée pour le mode suppression */
+.contact-item-delete-mode {
+    animation: slideInLeft 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Styles pour les notifications de suppression */
+.notification.delete-success {
+    background-color: #fee2e2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.notification.delete-success .notification-icon {
+    color: #ef4444;
+}
+
+/* Styles pour les conversations */
+.chat-item {
+    transition: all 0.2s ease-in-out;
+    border-left: 3px solid transparent;
+}
+
+.chat-item:hover {
+    background-color: #f9fafb;
+    border-left-color: #e5e7eb;
+}
+
+.chat-item.active {
+    background-color: #eff6ff;
+    border-left-color: #3b82f6;
+}
+
+.chat-item.unread {
+    background-color: #fefce8;
+}
+
+/* Styles pour les messages */
+.message-container {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-time {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+.message-status {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+}
+
+.message-status.sent {
+    color: #9ca3af;
+}
+
+.message-status.delivered {
+    color: #6b7280;
+}
+
+.message-status.read {
+    color: #3b82f6;
+}
+
+/* Styles pour l'upload d'images */
+.image-upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+.image-upload-area:hover {
+    border-color: #3b82f6;
+    background-color: #f8fafc;
+}
+
+.image-upload-area.dragover {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+/* Styles pour les badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge-success {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.badge-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.badge-info {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* Styles pour les modales */
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Styles pour les tooltips */
+.tooltip {
+    position: relative;
+}
+
+.tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #1f2937;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease-in-out;
+    z-index: 1000;
+}
+
+.tooltip:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Styles pour les barres de défilement */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f9fafb;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f9fafb;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Styles pour les états de chargement */
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-dots {
+    display: inline-flex;
+    gap: 2px;
+}
+
+.loading-dots span {
+    width: 4px;
+    height: 4px;
+    background-color: currentColor;
+    border-radius: 50%;
+    animation: loadingDots 1.4s ease-in-out infinite both;
+}
+
+.loading-dots span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes loadingDots {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Styles pour les transitions de vue */
+.view-transition {
+    transition: all 0.3s ease-in-out;
+}
+
+.view-enter {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.view-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.view-exit {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.view-exit-active {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+/* Styles pour les éléments interactifs */
+.interactive-element {
+    transition: all 0.2s ease-in-out;
+}
+
+.interactive-element:hover {
+    transform: scale(1.02);
+}
+
+.interactive-element:active {
+    transform: scale(0.98);
+}
+
+/* Styles pour les indicateurs de statut */
+.status-indicator {
+    position: relative;
+}
+
+.status-indicator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.status-indicator.online::after {
+    background-color: #10b981;
+}
+
+.status-indicator.away::after {
+    background-color: #f59e0b;
+}
+
+.status-indicator.busy::after {
+    background-color: #ef4444;
+}
+
+.status-indicator.offline::after {
+    background-color: #6b7280;
+}
+
+/* Styles pour les animations de frappe */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background-color: #f3f4f6;
+    border-radius: 18px;
+    margin: 4px 0;
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #9ca3af;
+    border-radius: 50%;
+    animation: typingAnimation 1.4s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typingAnimation {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+/* Styles pour les émojis */
+.emoji-picker {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.emoji-item {
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.emoji-item:hover {
+    background-color: #f3f4f6;
+}
+
+/* Styles responsifs */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+    
+    .conversations-panel {
+        width: 100%;
+        max-width: none;
+    }
+    
+    .chat-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+    }
+    
+    .mobile-hidden {
+        display: none;
+    }
+    
+    .mobile-full {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .message-bubble {
+        max-width: 85%;
+    }
+    
+    .contact-item,
+    .chat-item {
+        padding: 12px 16px;
+    }
+    
+    .form-input {
+        font-size: 16px; /* Évite le zoom sur iOS */
+    }
+}
+
+/* Styles pour l'impression */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .chat-messages {
+        background: white !important;
+    }
+    
+    .message-bubble {
+        border: 1px solid #e5e7eb !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Styles pour le mode sombre (à implémenter plus tard) */
+@media (prefers-color-scheme: dark) {
+    .dark-mode {
+        --bg-primary: #1f2937;
+        --bg-secondary: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #4b5563;
+    }
+}
+
+/* Styles pour l'accessibilité */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.focus-visible:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Styles pour les animations de performance */
+.will-change-transform {
+    will-change: transform;
+}
+
+.will-change-opacity {
+    will-change: opacity;
+}
+
+/* Styles pour les états d'erreur */
+.error-state {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Styles pour les états de succès */
+.success-state {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+.success-message {
+    color: #059669;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Styles pour les états de validation */
+.valid-input {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.invalid-input {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Styles pour les drag & drop */
+.drag-over {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+    transform: scale(1.02);
+}
+
+.drag-active {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #3b82f6;
+}
+
+/* Styles pour les menus contextuels */
+.context-menu {
+    position: absolute;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 4px 0;
+    min-width: 150px;
+    z-index: 1000;
+    animation: contextMenuSlideIn 0.15s ease-out;
+}
+
+@keyframes contextMenuSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.context-menu-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.context-menu-item:hover {
+    background-color: #f3f4f6;
+}
+
+.context-menu-item.danger:hover {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.context-menu-separator {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 4px 0;
+}
+
+/* Styles pour les badges de notification */
+.notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 2px solid white;
+    animation: notificationPulse 2s infinite;
+}
+
+@keyframes notificationPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+/* Styles pour les skeleton loaders */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeletonLoading 1.5s infinite;
+}
+
+@keyframes skeletonLoading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-text {
+    height: 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+}
+
+.skeleton-button {
+    height: 2.5rem;
+    border-radius: 6px;
+    width: 100px;
+}
+
+/* Styles pour les progress bars */
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: progressShimmer 2s infinite;
+}
+
+@keyframes progressShimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Styles pour les switches/toggles */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #d1d5db;
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input:checked + .toggle-slider {
+    background-color: #3b82f6;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+/* Styles pour les cards */
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Styles pour les tabs */
+.tab-list {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-button {
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    color: #6b7280;
+}
+
+.tab-button:hover {
+    color: #374151;
+    background-color: #f9fafb;
+}
+
+.tab-button.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+}
+
+.tab-content {
+    padding: 1rem 0;
+}
+
+/* Styles pour les accordéons */
+.accordion-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+}
+
+.accordion-header {
+    padding: 1rem;
+    background-color: #f9fafb;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.accordion-header:hover {
+    background-color: #f3f4f6;
+}
+
+.accordion-content {
+    padding: 1rem;
+    border-top: 1px solid #e5e7eb;
+    background-color: white;
+}
+
+.accordion-icon {
+    transition: transform 0.2s ease;
+}
+
+.accordion-item.open .accordion-icon {
+    transform: rotate(180deg);
+}
+
+/* Styles pour les popover */
+.popover {
+    position: absolute;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    max-width: 300px;
+    z-index: 1000;
+    animation: popoverSlideIn 0.2s ease-out;
+}
+
+@keyframes popoverSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.popover-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.popover-arrow.top {
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px 8px 0 8px;
+    border-color: white transparent transparent transparent;
+}
+
+.popover-arrow.bottom {
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 8px 8px 8px;
+    border-color: transparent transparent white transparent;
+}
+
+/* Styles pour les alertes */
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.alert-info {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1e40af;
+}
+
+.alert-success {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+.alert-warning {
+    background-color: #fffbeb;
+    border: 1px solid #fed7aa;
+    color: #92400e;
+}
+
+.alert-error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.alert-icon {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+.alert-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.alert-message {
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Styles pour les breadcrumbs */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+}
+
+.breadcrumb-item {
+    color: #6b7280;
+}
+
+.breadcrumb-item:last-child {
+    color: #374151;
+    font-weight: 500;
+}
+
+.breadcrumb-separator {
+    color: #d1d5db;
+}
+
+/* Styles pour les stats/métriques */
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-change {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.stat-change.positive {
+    color: #059669;
+}
+
+.stat-change.negative {
+    color: #dc2626;
+}
+
+/* Styles pour les timelines */
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #e5e7eb;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -2.25rem;
+    top: 0.25rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: #3b82f6;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #e5e7eb;
+}
+
+.timeline-content {
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-time {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+/* Styles pour les ratings/étoiles */
+.rating {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.rating-star {
+    color: #d1d5db;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-star.filled {
+    color: #fbbf24;
+}
+
+.rating-star:hover {
+    color: #f59e0b;
+}
+
+/* Styles pour les chips/tags */

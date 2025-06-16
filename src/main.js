@@ -1,234 +1,310 @@
-let currentUser = null;
-let currentChat = null;
-let appData = null;
-let isNewChatViewActive = false;
+import 'tailwindcss/tailwind.css';
+import './styles.css';
 
-// Configuration Tailwind
+import { ContactsManager } from './modules/contacts.js';
+import { MessagesManager } from './modules/messages.js';
+import { showNotification, setupGlobalErrorHandling, showConfirmPopup, showError } from './modules/errors.js';
+import { resizeImage, validatePhone, formatPhone } from './modules/utils.js';
 
+// Variables globales
+let currentUser = window.currentUser || null;
+let isLoggedIn = window.isLoggedIn || false;
 
-// Fonction pour charger les données JSON
-async function loadAppData() {
-    try {
-        const response = await fetch('src/data.json')
+// Instances des managers
+const contactsManager = new ContactsManager();
+const messagesManager = new MessagesManager();
 
-        if (!response.ok) throw new Error('Erreur lors du chargement des données');
-        appData = await response.json();
-        renderChatList();
-    } catch (e) {
-        console.warn('Impossible de charger les données JSON, utilisation des données de secours.');
-        setupFallbackData();
-        renderChatList();
+// Initialisation
+document.addEventListener('DOMContentLoaded', async function() {
+    // Vérifier l'authentification
+    if (!isLoggedIn || !currentUser) {
+        window.location.href = 'login.html';
+        return;
     }
-}
-
-// Initialisation de l'application
-document.addEventListener('DOMContentLoaded', function() {
-    loadAppData();
+    
+    // Configuration des erreurs globales
+    setupGlobalErrorHandling();
+    
+    // Initialiser l'interface
+    updateUserInterface();
     setupEventListeners();
+    
+    // Charger les données
+    await loadAppData();
+    
+    showNotification('Application chargée avec succès', 'success');
 });
-
-// Données de secours
-function setupFallbackData() {
-    appData = {
-        users: [
-            { id: 1, username: 'admin', password: 'admin123', name: 'Administrateur' },
-            { id: 2, username: 'user1', password: 'pass123', name: 'Utilisateur 1' }
-        ]
-        
-    };
-}
 
 // Configuration des événements
 function setupEventListeners() {
-    // Bouton nouvelle discussion
-    document.getElementById('new-chat-btn').addEventListener('click', showNewChatView);
+    // Navigation
+    setupNavigationEvents();
     
-    // Bouton retour
-    document.getElementById('back-to-chats').addEventListener('click', showConversationsView);
+    // Formulaires
+    setupFormEvents();
     
-    // Recherche de contacts
-    document.getElementById('contact-search').addEventListener('input', filterContacts);
+    // Messages
+    setupMessageEvents();
     
-    // Clics sur les contacts
-    document.addEventListener('click', function(e) {
-        const contactItem = e.target.closest('.contact-item');
-        if (contactItem && contactItem.dataset.name) {
-            startNewConversation(contactItem.dataset.name, contactItem.dataset.phone);
-        }
+    // Recherche
+    setupSearchEvents();
+    
+    // Menu contextuel
+    setupMenuEvents();
+    
+    // Événements personnalisés
+    document.addEventListener('startChat', async (e) => {
+        const { name, phone, contactId } = e.detail;
+        const chat = await messagesManager.createChat(name, phone, contactId);
+        messagesManager.openChat(chat);
+        showConversationsView();
     });
 }
 
-// Afficher la vue nouvelle discussion
+function setupNavigationEvents() {
+    document.getElementById('new-chat-btn')?.addEventListener('click', showNewChatView);
+    document.getElementById('back-to-chats')?.addEventListener('click', showConversationsView);
+    document.getElementById('new-contact-btn')?.addEventListener('click', showAddContactView);
+    document.getElementById('back-to-new-chat')?.addEventListener('click', showNewChatView);
+    document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
+}
+
+function setupFormEvents() {
+    const addContactForm = document.getElementById('addContactForm');
+    if (addContactForm) {
+        addContactForm.addEventListener('submit', handleAddContact);
+    }
+    
+    const contactAvatar = document.getElementById('contactAvatar');
+    if (contactAvatar) {
+        contactAvatar.addEventListener('change', handleAvatarUpload);
+    }
+}
+
+function setupMessageEvents() {
+    const messageInput = document.querySelector('footer input[type="text"]');
+    const sendButton = document.querySelector('footer button:last-child');
+    
+    if (messageInput && sendButton) {
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        messageInput.addEventListener('input', function() {
+            const icon = sendButton.querySelector('i');
+            if (this.value.trim()) {
+                icon.classList.remove('fa-microphone');
+                icon.classList.add('fa-paper-plane');
+            } else {
+                icon.classList.remove('fa-paper-plane');
+                icon.classList.add('fa-microphone');
+            }
+        });
+        
+        sendButton.addEventListener('click', () => {
+            const icon = sendButton.querySelector('i');
+            if (icon && icon.classList.contains('fa-paper-plane')) {
+                sendMessage();
+            }
+        });
+        
+        // Sauvegarde le brouillon seulement quand on quitte le champ (blur)
+        messageInput.addEventListener('blur', function() {
+            if (messagesManager.currentChat) {
+                messagesManager.saveDraft(messagesManager.currentChat.id, this.value);
+            }
+        });
+    }
+}
+
+function setupSearchEvents() {
+    const contactSearch = document.getElementById('contact-search');
+    if (contactSearch) {
+        contactSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            contactsManager.filterContacts(searchTerm);
+        });
+    }
+}
+
+function setupMenuEvents() {
+    const menuBtn = document.getElementById('chat-menu-btn');
+    const menuDropdown = document.getElementById('chat-menu-dropdown');
+    const deleteBtn = document.getElementById('delete-contact-btn');
+    
+    if (menuBtn && menuDropdown) {
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuDropdown.classList.toggle('hidden');
+        });
+        
+        document.addEventListener('click', () => {
+            menuDropdown.classList.add('hidden');
+        });
+    }
+    
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => {
+            if (!messagesManager.currentChat) return;
+            
+            showConfirmPopup(`Supprimer le contact "${messagesManager.currentChat.name}" ?`, async () => {
+                await contactsManager.deleteContact(messagesManager.currentChat.contactId);
+                await messagesManager.deleteChat(messagesManager.currentChat.id);
+                messagesManager.currentChat = null;
+            });
+            
+            menuDropdown.classList.add('hidden');
+        });
+    }
+}
+
+// Gestionnaires d'événements
+async function handleAddContact(event) {
+    event.preventDefault();
+    
+    const saveBtn = document.getElementById('saveContactBtn');
+    const formData = new FormData(event.target);
+    
+    const contactData = {
+        prenom: formData.get('prenom').trim(),
+        prenomPhonetique: formData.get('prenom-phonetique').trim(),
+        nom: formData.get('nom').trim(),
+        nomPhonetique: formData.get('nom-phonetique').trim(),
+        entreprise: formData.get('entreprise').trim(),
+        phone: formData.get('phone').trim()
+    };
+    
+    // Récupérer l'avatar
+    const avatarImg = document.querySelector('#add-contact-view img[alt="Avatar"]');
+    if (avatarImg && avatarImg.src.startsWith('data:')) {
+        contactData.avatar = avatarImg.src;
+    }
+    
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Enregistrement...';
+    
+    try {
+        await contactsManager.addContact(contactData);
+        event.target.reset();
+        resetAvatarDisplay();
+        showNewChatView();
+    } catch (error) {
+        showError('addContactError', error.message);
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Enregistrer';
+    }
+}
+
+async function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (file.size > 10 * 1024 * 1024) {
+        showNotification('L\'image ne doit pas dépasser 10MB', 'error');
+        return;
+    }
+    
+    if (!file.type.startsWith('image/')) {
+        showNotification('Veuillez sélectionner une image valide', 'error');
+        return;
+    }
+    
+    try {
+        const resizedImage = await resizeImage(file, 200, 200, 0.8);
+        const avatarContainer = document.querySelector('#add-contact-view .w-32.h-32');
+        if (avatarContainer) {
+            avatarContainer.innerHTML = `
+                <img src="${resizedImage}" alt="Avatar" class="w-full h-full object-cover rounded-full">
+            `;
+        }
+        showNotification('Image chargée avec succès', 'success');
+    } catch (error) {
+        showNotification('Erreur lors du traitement de l\'image', 'error');
+    }
+}
+
+async function sendMessage() {
+    const messageInput = document.querySelector('footer input[type="text"]');
+    if (!messageInput) return;
+    
+    const messageText = messageInput.value.trim();
+    if (!messageText) return;
+    
+    await messagesManager.sendMessage(messageText);
+    messageInput.value = '';
+    
+    // Remettre l'icône micro
+    const sendButton = document.querySelector('footer button:last-child i');
+    if (sendButton) {
+        sendButton.classList.remove('fa-paper-plane');
+        sendButton.classList.add('fa-microphone');
+    }
+}
+
+// Navigation
+function showConversationsView() {
+    document.getElementById('conversations-view').classList.remove('hidden');
+    document.getElementById('new-chat-view').classList.add('hidden');
+    document.getElementById('add-contact-view').classList.add('hidden');
+}
+
 function showNewChatView() {
     document.getElementById('conversations-view').classList.add('hidden');
     document.getElementById('new-chat-view').classList.remove('hidden');
-    isNewChatViewActive = true;
-    
-    // Focus sur la barre de recherche
-    setTimeout(() => {
-        document.getElementById('contact-search').focus();
-    }, 100);
+    document.getElementById('add-contact-view').classList.add('hidden');
+    contactsManager.renderContactList();
 }
 
-// Afficher la vue des conversations
-function showConversationsView() {
+function showAddContactView() {
+    document.getElementById('conversations-view').classList.add('hidden');
     document.getElementById('new-chat-view').classList.add('hidden');
-    document.getElementById('conversations-view').classList.remove('hidden');
-    isNewChatViewActive = false;
+    document.getElementById('add-contact-view').classList.remove('hidden');
     
-    // Nettoyer la recherche
-    document.getElementById('contact-search').value = '';
-    filterContacts();
-}
-
-// Filtrer les contacts
-function filterContacts() {
-    const searchTerm = document.getElementById('contact-search').value.toLowerCase();
-    const contactItems = document.querySelectorAll('.contact-item');
-    
-    contactItems.forEach(item => {
-        const name = item.querySelector('.font-semibold').textContent.toLowerCase();
-        const phone = item.dataset.phone ? item.dataset.phone.toLowerCase() : '';
-        
-        const isVisible = name.includes(searchTerm) || phone.includes(searchTerm);
-        item.style.display = isVisible ? 'flex' : 'none';
-    });
-}
-
-// Démarrer une nouvelle conversation
-function startNewConversation(contactName, contactPhone) {
-    // Vérifier si une conversation existe déjà avec ce contact
-    let existingChat = appData.chats.find(chat => 
-        chat.name === contactName || chat.phone === contactPhone
-    );
-    
-    if (!existingChat) {
-        // Créer une nouvelle conversation
-        const newChat = {
-            id: Date.now(),
-            name: contactName,
-            phone: contactPhone,
-            lastMessage: "Nouvelle conversation",
-            time: getCurrentTime(),
-            unread: 0,
-            type: "contact",
-            avatar: contactName.charAt(0).toUpperCase(),
-            messages: []
-        };
-        
-        appData.chats.unshift(newChat);
-        existingChat = newChat;
+    const form = document.getElementById('addContactForm');
+    if (form) {
+        form.reset();
+        resetAvatarDisplay();
     }
-    
-    // Retourner à la vue des conversations et ouvrir le chat
-    showConversationsView();
-    renderChatList();
-    openChat(existingChat);
-    
-    showNotification(`Conversation avec ${contactName} ouverte`, 'success');
 }
 
-// Rendu de la liste des conversations
-function renderChatList() {
-    const chatList = document.getElementById('conversations-list');
-    chatList.innerHTML = '';
-
-    appData.chats.forEach(chat => {
-        const chatElement = createChatElement(chat);
-        chatList.appendChild(chatElement);
-    });
-}
-
-// Création d'un élément de conversation
-function createChatElement(chat) {
-    const chatElement = document.createElement('div');
-    chatElement.className = 'p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-all duration-200 chat-item animate-fadeIn';
-    chatElement.onclick = () => openChat(chat);
-
-    const avatarColor = getAvatarColor(chat.type);
-    const unreadBadge = chat.unread > 0 ? 
-        `<div class="bg-whatsapp text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">${chat.unread}</div>` : '';
-
-    chatElement.innerHTML = `
-        <div class="flex items-center space-x-3">
-            <div class="w-12 h-12 ${avatarColor} rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                ${chat.avatar}
-            </div>
-            <div class="flex-1 min-w-0">
-                <div class="flex justify-between items-start">
-                    <h3 class="font-semibold text-gray-900 truncate">${chat.name}</h3>
-                    <div class="flex flex-col items-end space-y-1">
-                        <span class="text-xs text-gray-500">${chat.time}</span>
-                        ${unreadBadge}
-                    </div>
-                </div>
-                <p class="text-sm text-gray-600 truncate mt-1">${chat.lastMessage}</p>
-            </div>
-        </div>
-    `;
-
-    return chatElement;
-}
-
-// Obtenir la couleur de l'avatar selon le type
-function getAvatarColor(type) {
-    return type === 'group' ? 'bg-blue-500' : 'bg-green-500';
-}
-
-// Ouverture d'une conversation
-function openChat(chat) {
-    currentChat = chat;
-    console.log('Chat ouvert:', chat.name);
-    showNotification(`Chat avec ${chat.name} ouvert`, 'info');
-}
-
-// Obtenir l'heure actuelle formatée
-function getCurrentTime() {
-    return new Date().toLocaleTimeString('fr-FR', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-}
-
-// Affichage des notifications
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 animate-fadeIn ${getNotificationClass(type)}`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.classList.add('animate-fadeOut');
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
-// Classes CSS pour les notifications
-function getNotificationClass(type) {
-    const classes = {
-        success: 'bg-green-500 text-white',
-        error: 'bg-red-500 text-white',
-        warning: 'bg-yellow-500 text-black',
-        info: 'bg-blue-500 text-white'
-    };
-    return classes[type] || classes.info;
-}
-
-// Raccourcis clavier
-document.addEventListener('keydown', function(e) {
-    // Échap pour retourner aux conversations depuis la vue nouvelle discussion
-    if (e.key === 'Escape' && isNewChatViewActive) {
-        showConversationsView();
+// Utilitaires
+function resetAvatarDisplay() {
+    const avatarContainer = document.querySelector('#add-contact-view .w-32.h-32');
+    if (avatarContainer) {
+        avatarContainer.innerHTML = `<i class="fa-solid fa-image text-4xl text-blue-400"></i>`;
     }
-    
-    // Ctrl/Cmd + N pour nouvelle discussion
-    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
-        e.preventDefault();
-        if (!isNewChatViewActive) {
-            showNewChatView();
+}
+
+function updateUserInterface() {
+    if (currentUser) {
+        const userAvatar = document.querySelector('aside img[alt="User"]');
+        if (userAvatar && currentUser.avatar) {
+            userAvatar.src = currentUser.avatar;
         }
     }
-});
+}
 
-console.log('WhatsApp Clone avec Nouvelle Discussion - Chargé avec succès !');
+function handleLogout() {
+    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+        localStorage.removeItem('whatsapp_token');
+        localStorage.removeItem('whatsapp_user');
+        localStorage.removeItem('whatsapp_remember');
+        window.location.href = 'login.html';
+    }
+}
+
+async function loadAppData() {
+    try {
+        await Promise.all([
+            contactsManager.loadContacts(),
+            messagesManager.loadChats()
+        ]);
+    } catch (error) {
+        console.error('Erreur lors du chargement des données:', error);
+        showNotification('Erreur lors du chargement des données', 'error');
+    }
+}
