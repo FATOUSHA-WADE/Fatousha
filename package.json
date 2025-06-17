@@ -7,8 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "json-server --watch db.json --port 3000",
-    "dev:full": "concurrently \"npm run server\" \"npm run dev\""
+    "server": "json-server --watch data.json --port 3000",
+    "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
+  "start": "vite preview --port=$PORT --host"
+
   },
   "devDependencies": {
     "vite": "^5.0.8",
