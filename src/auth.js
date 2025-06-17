@@ -355,7 +355,7 @@ function showRegisterView() {
 function handleForgotPassword() {
     alert('Fonctionnalité de récupération de mot de passe à implémenter');
 }
-
+//zone de connexion
 function clearAuthData() {
     localStorage.removeItem('whatsapp_token');
     localStorage.removeItem('whatsapp_user');
