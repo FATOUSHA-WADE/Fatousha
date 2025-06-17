@@ -159,7 +159,64 @@ function setupMenuEvents() {
             menuDropdown.classList.add('hidden');
         });
     }
+    
+    const contactsMenuBtn = document.getElementById('contacts-menu-btn');
+    const contactsMenuDropdown = document.getElementById('contacts-menu-dropdown');
+
+    if (contactsMenuBtn && contactsMenuDropdown) {
+      contactsMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        contactsMenuDropdown.classList.toggle('hidden');
+      });
+      document.addEventListener('click', () => {
+        contactsMenuDropdown.classList.add('hidden');
+      });
+      contactsMenuDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
+     const mainMenuBtn = document.getElementById('main-menu-btn');
+    const mainMenuDropdown = document.getElementById('main-menu-dropdown');
+
+    if (mainMenuBtn && mainMenuDropdown) {
+        mainMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mainMenuDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!mainMenuDropdown.contains(e.target) && !mainMenuBtn.contains(e.target)) {
+                mainMenuDropdown.classList.add('hidden');
+            }
+        });
+
+        mainMenuDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
 }
+
+
+// Afficher la page profil quand on clique sur l'avatar en bas de la sidebar
+document.querySelectorAll('.sidebar-avatar, .sidebar-avatar img').forEach(el => {
+  el.addEventListener('click', () => {
+    document.getElementById('profile-view').classList.remove('hidden');
+    // Optionnel : mettre à jour les infos dynamiquement
+    const user = window.currentUser;
+    if (user) {
+      document.getElementById('profile-avatar').src = user.avatar || 'images/xxx.jpeg';
+      document.getElementById('profile-name').textContent = user.name || 'Fatousha';
+      document.getElementById('profile-phone').textContent = user.phone || '+221 77 142 81 50';
+      document.getElementById('profile-status').textContent = user.status || 'Utilisateur privé';
+      document.getElementById('profile-location').textContent = user.location || 'Dakar, Sénégal';
+    }
+  });
+});
+
+// Bouton retour
+document.getElementById('back-to-main-btn')?.addEventListener('click', () => {
+  document.getElementById('profile-view').classList.add('hidden');
+});
 
 // Gestionnaires d'événements
 async function handleAddContact(event) {
@@ -307,4 +364,78 @@ async function loadAppData() {
         console.error('Erreur lors du chargement des données:', error);
         showNotification('Erreur lors du chargement des données', 'error');
     }
+}
+
+document.querySelector('aside .fa-gear')?.parentElement?.addEventListener('click', () => {
+    document.getElementById('settings-view').classList.remove('hidden');
+    // Optionnel : mettre à jour le nom/avatar utilisateur
+    const user = window.currentUser;
+    if (user) {
+        document.getElementById('settings-username').textContent = user.name || '';
+        document.querySelector('#settings-view img[alt="User"]').src = user.avatar || 'images/xxx.jpeg';
+    }
+});
+document.getElementById('close-settings-btn')?.addEventListener('click', () => {
+    document.getElementById('settings-view').classList.add('hidden');
+});
+
+// Affiche la vue "Ajouter des membres au groupe"
+document.querySelectorAll('#contacts-menu-dropdown button').forEach(btn => {
+  if (btn.textContent.includes('Nouveau groupe')) {
+    btn.addEventListener('click', () => {
+      document.getElementById('add-group-view').classList.remove('hidden');
+      document.getElementById('contacts-menu-dropdown').classList.add('hidden');
+      renderGroupContactList(); // <-- Ajoute cet appel ici
+    });
+  }
+});
+
+// Bouton retour pour fermer la vue
+document.getElementById('back-to-main-from-group')?.addEventListener('click', () => {
+  document.getElementById('add-group-view').classList.add('hidden');
+});
+
+const groupContacts = [
+  {
+    avatar: "images/avatar1.png",
+    name: "Ababacar Diop Kounoune Parcelle",
+    status: "Salut ! J’utilise WhatsApp."
+  },
+  {
+    avatar: "images/avatar2.png",
+    name: "Abdou Ahade Ferdor",
+    status: "Salut ! J’utilise WhatsApp."
+  },
+  {
+    avatar: "images/avatar3.png",
+    name: "Abdou Diallo",
+    status: "Salut ! J’utilise WhatsApp."
+  },
+  {
+    avatar: "images/avatar4.png",
+    name: "Abdou Faye",
+    status: "L'heure est venue de s'en aller, moi pour mourir d…"
+  },
+  {
+    avatar: "images/avatar5.png",
+    name: "Abdou Khadar M Baye",
+    status: "Salut ! J’utilise WhatsApp."
+  }
+];
+
+function renderGroupContactList() {
+  const ul = document.getElementById('group-contacts-list');
+  if (!ul) return;
+  ul.innerHTML = '';
+  groupContacts.forEach(contact => {
+    ul.innerHTML += `
+      <li class="flex items-center gap-4">
+        <img src="${contact.avatar}" alt="Avatar" class="w-14 h-14 rounded-full bg-gray-200 object-cover">
+        <div>
+          <div class="font-semibold text-base">${contact.name}</div>
+          <div class="text-gray-500 text-sm">${contact.status}</div>
+        </div>
+      </li>
+    `;
+  });
 }

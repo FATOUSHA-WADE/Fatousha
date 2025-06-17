@@ -72,7 +72,7 @@
     </button>
     <!-- Avatar utilisateur tout en bas -->
     <div>
-      <img src="images/xxx.jpeg" alt="User" class="w-10 h-10 rounded-full border-2 border-gray-300">
+      <img src="images/xxx.jpeg" alt="Avatar" class="sidebar-avatar w-10 h-10 rounded-full border-2 border-gray-300 mb-2">
     </div>
   </aside>
 
@@ -88,9 +88,36 @@
             <button id="new-chat-btn" class="p-2 rounded hover:bg-gray-200">
               <i class="fa-solid fa-plus"></i>
             </button>
-            <button class="p-2 rounded hover:bg-gray-200">
-              <i class="fa-solid fa-ellipsis-v"></i>
-            </button>
+            <!-- Place ce bloc dans la barre du haut de la liste des contacts/chats -->
+<div class="relative">
+  <button id="contacts-menu-btn" class="p-2 rounded hover:bg-gray-200">
+    <i class="fa-solid fa-ellipsis-v"></i>
+  </button>
+  <div id="contacts-menu-dropdown" class="absolute right-0 mt-2 w-64 bg-white border rounded-xl shadow-lg z-50 hidden">
+    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+      <i class="fa-solid fa-briefcase mr-3"></i> Outils professionnels
+    </button>
+    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+      <i class="fa-solid fa-users mr-3"></i> Nouveau groupe
+    </button>
+    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+      <i class="fa-solid fa-table-cells-large mr-3"></i> Catalogue
+    </button>
+    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+      <i class="fa-solid fa-bolt mr-3"></i> Réponses rapides
+    </button>
+    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+      <i class="fa-regular fa-star mr-3"></i> Messages importants
+    </button>
+    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+      <i class="fa-regular fa-folder-open mr-3"></i> Étiquettes
+    </button>
+    <hr class="my-1">
+    <button class="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50">
+      <i class="fa-solid fa-sign-out-alt mr-3"></i> Déconnexion
+    </button>
+  </div>
+</div>
           </div>
         </div>
         <div class="px-4 pb-2">
@@ -134,12 +161,12 @@
         <!-- Options de création -->
         <div class="px-4 pb-4">
           <!-- Nouveau groupe -->
-          <div class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer mb-2">
-            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3">
-              <i class="fa-solid fa-users text-white text-lg"></i>
-            </div>
-            <span class="text-lg font-medium">Nouveau groupe</span>
-          </div>
+          <div id="new-group-btn" class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer mb-2">
+  <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3">
+    <i class="fa-solid fa-users text-white text-lg"></i>
+  </div>
+  <span class="text-lg font-medium">Nouveau groupe</span>
+</div>
 
           <!-- Nouveau contact -->
         <div class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer" id="new-contact-btn">
@@ -189,10 +216,7 @@
       </button>
       <h1 class="text-xl font-semibold">Créer un contact</h1>
     </div>
-    <button class="p-2 rounded hover:bg-gray-200">
-      <i class="fa-solid fa-ellipsis-v"></i>
-    </button>
-  </div>
+ 
 
   <!-- Corps du formulaire -->
   <div class="flex-1 overflow-y-auto">
@@ -394,7 +418,127 @@
   </div>
 </div>
 
-    <script type="module" src="src/main.js"></script>
+    <!-- Vue Paramètres -->
+<div id="settings-view" class="hidden fixed inset-0 bg-white z-50 flex">
+  <!-- Sidebar à gauche -->
+  <nav class="flex flex-col items-center py-4 bg-gray-50 border-r w-20 h-full">
+    <button class="mb-6"><i class="fa-solid fa-comment-dots text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-regular fa-circle text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-regular fa-comments text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-solid fa-users text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-solid fa-store text-2xl"></i></button>
+    <div class="flex-1"></div>
+    <button id="settings-btn" class="mb-6"><i class="fa-solid fa-gear text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-solid fa-right-from-bracket text-2xl text-red-500"></i></button>
+    <img src="images/xxx.jpeg" alt="Avatar" id="sidebar-profile-avatar" class="w-10 h-10 rounded-full border-2 border-gray-300 mb-2 cursor-pointer">
+  </nav>
+  <!-- Contenu paramètres élargi -->
+  <aside class="w-[650px] bg-gray-50 border-r p-8 flex flex-col">
+    <h2 class="text-2xl font-bold mb-6">Paramètres</h2>
+    <div class="flex items-center mb-6">
+      <img src="images/xxx.jpeg" alt="User" class="w-16 h-16 rounded-full border-2 border-gray-300 mr-4">
+      <div>
+        <div class="font-semibold text-lg" id="settings-username">Fatousha</div>
+        <div class="text-gray-500 text-sm">Salut ! J’utilise WhatsApp.</div>
+      </div>
+    </div>
+    <input type="text" placeholder="Rechercher dans les paramètres" class="w-full px-4 py-2 rounded bg-gray-100 mb-6 focus:outline-none">
+    <ul class="space-y-4">
+      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-briefcase"></i> Outils professionnels</li>
+      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-key"></i> Compte</li>
+      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-lock"></i> Confidentialité</li>
+      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-comments"></i> Discussions</li>
+      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-bell"></i> Notifications</li>
+      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-keyboard"></i> Raccourcis clavier</li>
+    </ul>
+    <button id="close-settings-btn" class="mt-10 px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 w-full">Fermer</button>
+  </aside>
+  <div class="flex-1 flex flex-col items-center justify-center">
+    <i class="fa-solid fa-gear text-7xl text-gray-300 mb-6"></i>
+    <h1 class="text-3xl font-bold text-gray-700">Paramètres</h1>
+  </div>
+</div>
+
+    <!-- Vue Profil -->
+<div id="profile-view" class="hidden fixed inset-0 bg-white z-50 flex">
+  <!-- Sidebar à gauche -->
+  <nav class="flex flex-col items-center py-4 bg-gray-50 border-r w-20 h-full">
+    <button class="mb-6"><i class="fa-solid fa-comment-dots text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-regular fa-circle text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-regular fa-comments text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-solid fa-users text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-solid fa-store text-2xl"></i></button>
+    <div class="flex-1"></div>
+    <button id="settings-btn" class="mb-6"><i class="fa-solid fa-gear text-2xl"></i></button>
+    <button class="mb-6"><i class="fa-solid fa-right-from-bracket text-2xl text-red-500"></i></button>
+    <img src="images/xxx.jpeg" alt="Avatar" id="sidebar-profile-avatar" class="w-10 h-10 rounded-full border-2 border-gray-300 mb-2 cursor-pointer">
+  </nav>
+  <!-- Profil utilisateur à gauche -->
+  <div class="w-[420px] bg-white border-r flex flex-col">
+    <div class="flex items-center p-4 border-b bg-white">
+      <button id="back-to-main-btn" class="mr-4 text-gray-600 hover:text-gray-800">
+        <i class="fa-solid fa-arrow-left text-2xl"></i>
+      </button>
+      <span class="text-xl font-semibold">Profil</span>
+    </div>
+    <div class="flex-1 flex flex-col items-center bg-gray-50">
+      <div class="relative mt-8 mb-4">
+        <img id="profile-avatar" src="images/xxx.jpeg" alt="Avatar" class="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover">
+        <button class="absolute bottom-2 right-2 bg-gray-200 rounded-full p-2 shadow" title="Modifier la photo">
+          <i class="fa-solid fa-pen text-gray-600"></i>
+        </button>
+      </div>
+      <div class="space-y-6 w-full max-w-md px-6">
+        <div class="flex items-center gap-4">
+          <i class="fa-solid fa-briefcase text-xl text-gray-500"></i>
+          <span id="profile-name" class="font-semibold text-lg">Fatousha</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <i class="fa-solid fa-phone text-xl text-gray-500"></i>
+          <div>
+            <div id="profile-phone" class="font-medium">+221 77 142 81 50</div>
+            <div class="text-xs text-gray-500">Le nom et le numéro de téléphone seront visibles par votre clientèle WhatsApp et pourront être modifiés à partir de l’application sur votre appareil mobile.</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <i class="fa-solid fa-users text-xl text-gray-500"></i>
+          <span id="profile-status" class="font-medium">Utilisateur privé</span>
+          <button class="ml-auto text-gray-400 hover:text-gray-600"><i class="fa-solid fa-pen"></i></button>
+        </div>
+        <div class="flex items-center gap-4">
+          <i class="fa-solid fa-location-dot text-xl text-gray-500"></i>
+          <span id="profile-location" class="font-medium">Dakar, Sénégal</span>
+          <button class="ml-auto text-gray-400 hover:text-gray-600"><i class="fa-solid fa-pen"></i></button>
+        </div>
+        <div>
+          <img src="images/map.png" alt="Carte" class="rounded-xl w-full h-32 object-cover mt-2">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Partie droite : Profil centré -->
+  <div class="flex-1 flex flex-col items-center justify-center bg-white">
+    <i class="fa-regular fa-user text-7xl text-gray-300 mb-6"></i>
+    <h1 class="text-3xl font-bold text-gray-700">Profil</h1>
+  </div>
+</div>
+
+    <!-- Vue Ajout de Groupe -->
+<div id="add-group-view" class="hidden fixed inset-0 bg-white z-50 flex flex-col">
+  <div class="flex items-center p-4 border-b bg-white">
+    <button id="back-to-main-from-group" class="mr-4 text-gray-600 hover:text-gray-800">
+      <i class="fa-solid fa-arrow-left text-2xl"></i>
+    </button>
+    <span class="text-xl font-semibold">Ajouter des membres au groupe</span>
+  </div>
+  <div class="flex-1 overflow-y-auto px-8 py-4">
+    <input type="text" placeholder="Rechercher un nom ou un numéro" class="w-full border-b py-3 px-2 mb-6 text-lg focus:outline-none" />
+    <div class="text-gray-400 font-semibold mb-2">A</div>
+    <ul class="space-y-4" id="group-contacts-list"></ul>
+  </div>
+</div>
+
+  <script type="module" src="src/main.js"></script>
  
 </body>
 </html>

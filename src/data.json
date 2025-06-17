@@ -53,166 +53,39 @@
   ],
   "chats": [
     {
-      "id": "11cb",
+      "id": "03d5",
+      "name": "astou wade",
+      "phone": "+221771428150",
+      "contactId": "8797",
+      "avatar": null,
+      "lastMessage": "",
+      "lastMessageTime": "2025-06-17T10:56:46.694Z",
+      "unreadCount": 0,
+      "messages": [
+        {
+          "chatId": "03d5",
+          "from": "me",
+          "to": "+221771428150",
+          "text": "bonjour",
+          "time": "2025-06-17T10:56:56.527Z",
+          "status": "sent"
+        }
+      ],
+      "isActive": true,
+      "createdAt": "2025-06-17T10:56:46.694Z"
+    },
+    {
+      "id": "0a87",
       "name": "fatou wade",
       "phone": "+221771234567",
       "contactId": "0c24",
       "avatar": null,
       "lastMessage": "",
-      "lastMessageTime": "2025-06-16T08:24:41.606Z",
+      "lastMessageTime": "2025-06-17T12:59:39.030Z",
       "unreadCount": 0,
-      "messages": [
-        {
-          "chatId": "11cb",
-          "from": "me",
-          "to": "+221771234567",
-          "text": "bonjour",
-          "time": "2025-06-16T08:35:01.930Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "11cb",
-          "from": "me",
-          "to": "+221771234567",
-          "text": "cva ni",
-          "time": "2025-06-16T08:35:59.089Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "11cb",
-          "from": "me",
-          "to": "+221771234567",
-          "text": "loubess",
-          "time": "2025-06-16T08:36:15.193Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "11cb",
-          "from": "me",
-          "to": "+221771234567",
-          "text": "boulebb",
-          "time": "2025-06-16T08:36:33.421Z",
-          "status": "sent"
-        }
-      ],
+      "messages": [],
       "isActive": true,
-      "createdAt": "2025-06-16T08:24:41.606Z"
-    },
-    {
-      "id": "0e4b",
-      "name": "astou wade",
-      "phone": "+221771428150",
-      "avatar": null,
-      "lastMessage": "",
-      "lastMessageTime": "2025-06-16T08:25:10.279Z",
-      "unreadCount": 0,
-      "messages": [
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": "bonjour",
-          "time": "2025-06-16T08:34:49.156Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": "comment vas tu",
-          "time": "2025-06-16T08:35:41.719Z",
-          "status": "sent"
-        },
-        {
-          "id": "1750065643619",
-          "from": "me",
-          "text": "bon",
-          "time": "2025-06-16T09:20:43.619Z",
-          "chatId": "0e4b"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": "wxcvbn,",
-          "time": "2025-06-16T09:23:08.945Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": ";lkjhbgv",
-          "time": "2025-06-16T09:24:07.871Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": "nbvb",
-          "time": "2025-06-16T11:26:37.167Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": "kjhgfg",
-          "time": "2025-06-17T07:42:18.301Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": ",jhgf",
-          "time": "2025-06-17T07:56:32.118Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": "bvcxcv",
-          "time": "2025-06-17T08:04:13.375Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": "kjhjkl",
-          "time": "2025-06-17T08:04:28.531Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": "kjhgfd",
-          "time": "2025-06-17T08:05:47.973Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": ";,nbv",
-          "time": "2025-06-17T08:20:03.715Z",
-          "status": "sent"
-        },
-        {
-          "chatId": "0e4b",
-          "from": "me",
-          "to": "+221771428150",
-          "text": "vccdfgh",
-          "time": "2025-06-17T08:22:37.246Z",
-          "status": "sent"
-        }
-      ],
-      "isActive": true,
-      "createdAt": "2025-06-16T08:25:10.279Z"
+      "createdAt": "2025-06-17T12:59:39.030Z"
     }
   ]
 }
