@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://json-backend-1-waeu.onrender.com';
 
 // Centralisation de toutes les opérations API
 class ApiService {
