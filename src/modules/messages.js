@@ -65,26 +65,30 @@ export class MessagesManager {
             };
 
             const savedMessage = await apiService.createMessage(message);
-            
+
             // Mettre à jour le chat local
             if (!this.currentChat.messages) {
                 this.currentChat.messages = [];
             }
             this.currentChat.messages.push(savedMessage);
-            this.currentChat.lastMessage = text;
+            this.currentChat.lastMessage = savedMessage.text;
             this.currentChat.lastMessageTime = savedMessage.time;
-
-            // Mettre à jour le chat sur le serveur
-            await apiService.updateChat(this.currentChat.id, this.currentChat);
-
-            this.loadChatMessages(this.currentChat);
-            this.renderChatList();
 
             // Mettre à jour le chat dans la liste locale
             const idx = this.chats.findIndex(c => c.id === this.currentChat.id);
             if (idx !== -1) {
                 this.chats[idx] = { ...this.currentChat };
             }
+
+            // Mettre à jour le chat sur le serveur
+            await apiService.updateChat(this.currentChat.id, this.currentChat);
+
+            // Réafficher la conversation et la liste
+            this.loadChatMessages(this.currentChat);
+            this.renderChatList();
+
+            // Supprimer le brouillon pour ce chat
+            delete this.chatDrafts[this.currentChat.id];
 
             return savedMessage;
         } catch (error) {

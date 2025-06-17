@@ -1,5 +1,5 @@
 {
-  "name": "whatsapp-clone",
+  "name": "monapp",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,8 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "server": "json-server --watch data.json --port 3000",
-    "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
-  "start": "vite preview --port=$PORT --host"
+    "dev:full": "concurrently \"npm run server\" \"npm run dev\""
 
   },
   "devDependencies": {
