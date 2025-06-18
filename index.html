@@ -4,541 +4,447 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatsApp - Connexion</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://kit.fontawesome.com/a25b730148.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a25b730148.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Script de vérification d'authentification -->
-    <script>
-        // Vérifier l'authentification avant de charger l'application
-        (function() {
-            const token = localStorage.getItem('whatsapp_token');
-            const userData = localStorage.getItem('whatsapp_user');
-            
-            if (!token || !userData) {
-                // Rediriger vers la page de connexion
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            try {
-                window.currentUser = JSON.parse(userData);
-                window.isLoggedIn = true;
-            } catch (error) {
-                console.error('Erreur lors de la récupération des données utilisateur:', error);
-                localStorage.removeItem('whatsapp_token');
-                localStorage.removeItem('whatsapp_user');
-                window.location.href = 'login.html';
-            }
-        })();
-    </script>
-
-    <!-- Sidebar -->
-<div class="flex h-screen">
-  <aside class="bg-gray-50 w-20 flex flex-col items-center py-4 border-r h-screen">
-    <div class="relative mb-6">
-        <!-- Icône WhatsApp -->
-      <button class="p-2 rounded hover:bg-gray-200">
-        <i class="fa-solid fa-message text-2xl"></i>
-      </button>
-    </div>
-    <!-- Icône Statut -->
-    <button class="p-2 rounded hover:bg-gray-200 mb-4" title="Statut">
-      <i class="fa-regular fa-circle-dot text-2xl"></i>
-    </button>
-    <button class="p-2 rounded hover:bg-gray-200 mb-4" title="Chaines">
-      <i class="fa-regular fa-comment-dots text-2xl"></i>
-    </button>
-   
-      <button class="p-2 rounded hover:bg-gray-200 mb-4" title="Communautés">
-      <i class="fa-solid fa-users text-2xl"></i>
-    </button>
-    <!-- Icône Chaîne -->
-    <button class="p-2 rounded hover:bg-gray-200 mb-4" title="Outils">
-<i class="fa-solid fa-shop text-2xl"></i>
-
-    </button>
-
-    <!-- Espace qui pousse les éléments suivants v  ers le bas -->
-    <div class="flex-1"></div>
-    <!-- Icône paramètres en bas -->
-    <button class="p-2 rounded hover:bg-gray-200 mb-2" title="Paramètres">
-      <i class="fa-solid fa-gear text-2xl"></i>
-    </button>
-    <!-- Bouton de déconnexion -->
-    <button id="logoutBtn" class="p-2 rounded hover:bg-red-200 mb-2 text-red-600" title="Déconnexion">
-      <i class="fa-solid fa-sign-out-alt text-2xl"></i>
-    </button>
-    <!-- Avatar utilisateur tout en bas -->
-    <div>
-      <img src="images/xxx.jpeg" alt="Avatar" class="sidebar-avatar w-10 h-10 rounded-full border-2 border-gray-300 mb-2">
-    </div>
-  </aside>
-
-  <!-- Main content -->
-  <main class="flex-1 flex">
-    <!-- Conversations list -->
-    <section class="w-96 bg-white border-r flex flex-col">
-      <!-- Vue normale des conversations -->
-      <div id="conversations-view">
-        <div class="flex items-center justify-between p-4">
-          <h1 class="text-2xl font-bold">WhatsApp</h1>
-          <div class="flex items-center gap-2">
-            <button id="new-chat-btn" class="p-2 rounded hover:bg-gray-200">
-              <i class="fa-solid fa-plus"></i>
-            </button>
-            <!-- Place ce bloc dans la barre du haut de la liste des contacts/chats -->
-<div class="relative">
-  <button id="contacts-menu-btn" class="p-2 rounded hover:bg-gray-200">
-    <i class="fa-solid fa-ellipsis-v"></i>
-  </button>
-  <div id="contacts-menu-dropdown" class="absolute right-0 mt-2 w-64 bg-white border rounded-xl shadow-lg z-50 hidden">
-    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
-      <i class="fa-solid fa-briefcase mr-3"></i> Outils professionnels
-    </button>
-    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
-      <i class="fa-solid fa-users mr-3"></i> Nouveau groupe
-    </button>
-    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
-      <i class="fa-solid fa-table-cells-large mr-3"></i> Catalogue
-    </button>
-    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
-      <i class="fa-solid fa-bolt mr-3"></i> Réponses rapides
-    </button>
-    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
-      <i class="fa-regular fa-star mr-3"></i> Messages importants
-    </button>
-    <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
-      <i class="fa-regular fa-folder-open mr-3"></i> Étiquettes
-    </button>
-    <hr class="my-1">
-    <button class="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50">
-      <i class="fa-solid fa-sign-out-alt mr-3"></i> Déconnexion
-    </button>
-  </div>
-</div>
-          </div>
-        </div>
-        <div class="px-4 pb-2">
-          <input type="text" placeholder="Rechercher ou démarrer une discussion" class="w-full px-3 py-2 rounded bg-gray-100 focus:outline-none">
-        </div>
-        <div class="flex gap-2 px-4 pb-2">
-          <button class="px-3 py-1 rounded-full bg-gray-200 text-sm">Toutes</button>
-          <button class="px-3 py-1 rounded-full bg-gray-100 text-sm">Non lues</button>
-          <button class="px-3 py-1 rounded-full bg-gray-100 text-sm">Favoris</button>
-          <button class="px-3 py-1 rounded-full bg-gray-100 text-sm">Groupes</button>
-        </div>
-        <div class="overflow-y-auto flex-1">
-          <!-- Conversations dynamiques ici -->
-          <div id="conversations-list"></div>
-        </div>
-      </div>
-
-      <!-- Vue nouvelle discussion -->
-      <div id="new-chat-view" class="hidden flex flex-col h-full">
-        <!-- En-tête -->
-        <div class="flex items-center p-4 border-b">
-          <button id="back-to-chats" class="p-2 rounded hover:bg-gray-200 mr-3">
-            <i class="fa-solid fa-arrow-left text-xl"></i>
-          </button>
-          <h1 class="text-xl font-semibold">Nouvelle discussion</h1>
-        </div>
-
-        <!-- Barre de recherche -->
-        <div class="p-4">
-          <div class="relative">
-            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <input 
-              type="text" 
-              id="contact-search"
-              placeholder="Rechercher un nom ou un numéro" 
-              class="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-          </div>
-        </div>
-
-        <!-- Options de création -->
-        <div class="px-4 pb-4">
-          <!-- Nouveau groupe -->
-          <div id="new-group-btn" class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer mb-2">
-  <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3">
-    <i class="fa-solid fa-users text-white text-lg"></i>
-  </div>
-  <span class="text-lg font-medium">Nouveau groupe</span>
-</div>
-
-          <!-- Nouveau contact -->
-        <div class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer" id="new-contact-btn">
-  <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-    <i class="fa-solid fa-user-plus text-white text-lg"></i>
-  </div>
-  <span class="text-lg font-medium">Nouveau contact</span>
-</div>
-
-        <!-- Section Contacts -->
-        <div class="flex-1 overflow-y-auto">
-          <div class="px-4 py-2">
-            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Contacts sur WhatsApp</h3>
-          </div>
-
-          <!-- Liste des contacts -->
-          <div id="contacts-list">
-            <!-- Contact Mame Fatou Wade -->
-            <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer contact-item">
-              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23E0E7FF'/%3E%3Ctext x='24' y='30' font-family='Arial' font-size='18' font-weight='bold' text-anchor='middle' fill='%234F46E5'%3EM%3C/text%3E%3C/svg%3E" alt="Mame Fatou Wade" class="w-12 h-12 rounded-full mr-3">
-              
+    <!-- Vue de connexion -->
+    <div id="login-view" class="bg-gray-100 min-h-screen flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+            <!-- Logo WhatsApp -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fab fa-whatsapp text-white text-4xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">WhatsApp Web</h1>
+                <p class="text-gray-600 mt-2">Connectez-vous pour continuer</p>
             </div>
 
-            <!-- Section A -->
-            <div class="px-4 py-2 bg-gray-50">
-              <h4 class="text-sm font-medium text-gray-600">A</h4>
+            <!-- Formulaire de connexion -->
+            <form id="loginForm" class="space-y-6">
+                <!-- Email/Téléphone -->
+                <div>
+                    <label for="identifier" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email ou Numéro de téléphone
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="text" 
+                            id="identifier"
+                            name="identifier"
+                            placeholder="Entrez votre email ou téléphone"
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Mot de passe -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                        Mot de passe
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="password" 
+                            id="password"
+                            name="password"
+                            placeholder="Entrez votre mot de passe"
+                            class="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            required
+                        >
+                        <button type="button" id="togglePassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Se souvenir de moi -->
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="rememberMe" class="rounded border-gray-300 text-green-600 focus:ring-green-500">
+                        <span class="ml-2 text-sm text-gray-600">Se souvenir de moi</span>
+                    </label>
+                    <a href="#" id="forgotPasswordLink" class="text-sm text-green-600 hover:text-green-500">
+                        Mot de passe oublié ?
+                    </a>
+                </div>
+
+                <!-- Message d'erreur -->
+                <div id="loginError" class="text-red-500 text-sm hidden"></div>
+
+                <!-- Bouton de connexion -->
+                <button 
+                    type="submit" 
+                    id="loginBtn"
+                    class="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 font-medium transition-colors"
+                >
+                    <span id="loginBtnText">Se connecter</span>
+                    <i id="loginSpinner" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+                </button>
+            </form>
+
+            <!-- Lien créer un compte -->
+            <div class="text-center mt-6 pt-6 border-t border-gray-200">
+                <p class="text-gray-600">
+                    Pas encore de compte ? 
+                    <a href="#" id="createAccountLink" class="text-green-600 hover:text-green-500 font-medium">
+                        Créer un compte
+                    </a>
+                </p>
             </div>
-            <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer contact-item">
-              <div class="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center mr-3">
-                <i class="fa-solid fa-user text-white text-lg"></i>
-              </div>
-              
+        </div>
+    </div>
+
+    <!-- Vue création de compte -->
+    <div id="register-view" class="bg-gray-100 min-h-screen flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+            <!-- En-tête -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fab fa-whatsapp text-white text-4xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">Créer un compte</h1>
+                <p class="text-gray-600 mt-2">Rejoignez WhatsApp Web</p>
             </div>
-        
+
+            <!-- Formulaire d'inscription -->
+            <form id="registerForm" class="space-y-6">
+                <!-- Nom complet -->
+                <div>
+                    <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">
+                        Nom complet
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="text" 
+                            id="fullName"
+                            name="fullName"
+                            placeholder="Entrez votre nom complet"
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="email" 
+                            id="email"
+                            name="email"
+                            placeholder="Entrez votre email"
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Téléphone -->
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                        Numéro de téléphone
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="tel" 
+                            id="phone"
+                            name="phone"
+                            placeholder="+221 77 123 45 67"
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Mot de passe -->
+                <div>
+                    <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-2">
+                        Mot de passe
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="password" 
+                            id="newPassword"
+                            name="newPassword"
+                            placeholder="Créez un mot de passe"
+                            class="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            required
+                        >
+                        <button type="button" id="toggleNewPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirmer mot de passe -->
+                <div>
+                    <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
+                        Confirmer le mot de passe
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="password" 
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirmez votre mot de passe"
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Message d'erreur -->
+                <div id="registerError" class="text-red-500 text-sm hidden"></div>
+
+                <!-- Bouton d'inscription -->
+                <button 
+                    type="submit" 
+                    id="registerBtn"
+                    class="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 font-medium transition-colors"
+                >
+                    <span id="registerBtnText">Créer le compte</span>
+                    <i id="registerSpinner" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+                </button>
+            </form>
+
+            <!-- Retour à la connexion -->
+            <div class="text-center mt-6 pt-6 border-t border-gray-200">
+                <p class="text-gray-600">
+                    Déjà un compte ? 
+                    <a href="#" id="backToLoginLink" class="text-green-600 hover:text-green-500 font-medium">
+                        Se connecter
+                    </a>
+                </p>
             </div>
-          </div>
         </div>
-      </div>
-    </section>
-<!-- Vue formulaire d'ajout de contact (à ajouter après la div id="new-chat-view") -->
-<div id="add-contact-view" class="hidden flex flex-col h-full bg-white">
-  <!-- En-tête -->
-  <div class="flex items-center justify-between p-4 border-b">
-    <div class="flex items-center">
-      <button id="back-to-new-chat" class="p-2 rounded hover:bg-gray-200 mr-3">
-        <i class="fa-solid fa-arrow-left text-xl"></i>
-      </button>
-      <h1 class="text-xl font-semibold">Créer un contact</h1>
     </div>
- 
 
-  <!-- Corps du formulaire -->
-  <div class="flex-1 overflow-y-auto">
-    <form id="addContactForm" class="h-full">
-      <!-- Section photo de profil -->
-      <div class="flex justify-center py-8 bg-gray-50 border-b">
-        <div class="relative">
-          <div class="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-            <i class="fa-solid fa-image text-4xl text-blue-400"></i>
-          </div>
-          <label for="contactAvatar" class="absolute bottom-2 right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-700 cursor-pointer">
-            <i class="fa-solid fa-plus text-sm"></i>
-          </label>
-          <input type="file" id="contactAvatar" accept="image/*" class="hidden">
+    <!-- Vue principale de l'application (cachée par défaut) -->
+    <div id="main-app" class="hidden">
+        <!-- Sidebar -->
+        <div class="flex h-screen">
+            <aside class="bg-gray-50 w-20 flex flex-col items-center py-4 border-r h-screen">
+                <div class="relative mb-6">
+                    <!-- Icône WhatsApp -->
+                    <button class="p-2 rounded hover:bg-gray-200">
+                        <i class="fa-solid fa-message text-2xl"></i>
+                    </button>
+                </div>
+                <!-- Icône Statut -->
+                <button class="p-2 rounded hover:bg-gray-200 mb-4" title="Statut">
+                    <i class="fa-regular fa-circle-dot text-2xl"></i>
+                </button>
+                <button class="p-2 rounded hover:bg-gray-200 mb-4" title="Chaines">
+                    <i class="fa-regular fa-comment-dots text-2xl"></i>
+                </button>
+               
+                <button class="p-2 rounded hover:bg-gray-200 mb-4" title="Communautés">
+                    <i class="fa-solid fa-users text-2xl"></i>
+                </button>
+                <!-- Icône Chaîne -->
+                <button class="p-2 rounded hover:bg-gray-200 mb-4" title="Outils">
+                    <i class="fa-solid fa-shop text-2xl"></i>
+                </button>
+
+                <!-- Espace qui pousse les éléments suivants vers le bas -->
+                <div class="flex-1"></div>
+                <!-- Icône paramètres en bas -->
+                <button class="p-2 rounded hover:bg-gray-200 mb-2" title="Paramètres">
+                    <i class="fa-solid fa-gear text-2xl"></i>
+                </button>
+                <!-- Bouton de déconnexion -->
+                <button id="logoutBtn" class="p-2 rounded hover:bg-red-200 mb-2 text-red-600" title="Déconnexion">
+                    <i class="fa-solid fa-sign-out-alt text-2xl"></i>
+                </button>
+                <!-- Avatar utilisateur tout en bas -->
+                <div>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23E0E7FF'/%3E%3Ctext x='20' y='26' font-family='Arial' font-size='16' font-weight='bold' text-anchor='middle' fill='%234F46E5'%3EU%3C/text%3E%3C/svg%3E" alt="Avatar" class="sidebar-avatar w-10 h-10 rounded-full border-2 border-gray-300 mb-2">
+                </div>
+            </aside>
+
+            <!-- Main content -->
+            <main class="flex-1 flex">
+                <!-- Conversations list -->
+                <section class="w-96 bg-white border-r flex flex-col">
+                    <!-- Vue normale des conversations -->
+                    <div id="conversations-view">
+                        <div class="flex items-center justify-between p-4">
+                            <h1 class="text-2xl font-bold">WhatsApp</h1>
+                            <div class="flex items-center gap-2">
+                                <button id="new-chat-btn" class="p-2 rounded hover:bg-gray-200">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                                <!-- Menu dropdown -->
+                                <div class="relative">
+                                    <button id="contacts-menu-btn" class="p-2 rounded hover:bg-gray-200">
+                                        <i class="fa-solid fa-ellipsis-v"></i>
+                                    </button>
+                                    <div id="contacts-menu-dropdown" class="absolute right-0 mt-2 w-64 bg-white border rounded-xl shadow-lg z-50 hidden">
+                                        <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+                                            <i class="fa-solid fa-briefcase mr-3"></i> Outils professionnels
+                                        </button>
+                                        <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+                                            <i class="fa-solid fa-users mr-3"></i> Nouveau groupe
+                                        </button>
+                                        <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+                                            <i class="fa-solid fa-table-cells-large mr-3"></i> Catalogue
+                                        </button>
+                                        <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+                                            <i class="fa-solid fa-bolt mr-3"></i> Réponses rapides
+                                        </button>
+                                        <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+                                            <i class="fa-regular fa-star mr-3"></i> Messages importants
+                                        </button>
+                                        <button class="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50">
+                                            <i class="fa-regular fa-folder-open mr-3"></i> Étiquettes
+                                        </button>
+                                        <hr class="my-1">
+                                        <button class="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50">
+                                            <i class="fa-solid fa-sign-out-alt mr-3"></i> Déconnexion
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-4 pb-2">
+                            <input type="text" placeholder="Rechercher ou démarrer une discussion" class="w-full px-3 py-2 rounded bg-gray-100 focus:outline-none">
+                        </div>
+                        <div class="flex gap-2 px-4 pb-2">
+                            <button class="px-3 py-1 rounded-full bg-gray-200 text-sm">Toutes</button>
+                            <button class="px-3 py-1 rounded-full bg-gray-100 text-sm">Non lues</button>
+                            <button class="px-3 py-1 rounded-full bg-gray-100 text-sm">Favoris</button>
+                            <button class="px-3 py-1 rounded-full bg-gray-100 text-sm">Groupes</button>
+                        </div>
+                        <div class="overflow-y-auto flex-1">
+                            <!-- Conversations dynamiques ici -->
+                            <div id="conversations-list">
+                                <!-- Exemple de conversation -->
+                                <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer border-b">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23E0E7FF'/%3E%3Ctext x='24' y='30' font-family='Arial' font-size='18' font-weight='bold' text-anchor='middle' fill='%234F46E5'%3EC%3C/text%3E%3C/svg%3E" alt="Contact" class="w-12 h-12 rounded-full mr-3">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <h3 class="font-semibold">Contact Exemple</h3>
+                                            <span class="text-xs text-gray-500">12:30</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 truncate">Dernier message...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vue nouvelle discussion -->
+                    <div id="new-chat-view" class="hidden flex flex-col h-full">
+                        <!-- En-tête -->
+                        <div class="flex items-center p-4 border-b">
+                            <button id="back-to-chats" class="p-2 rounded hover:bg-gray-200 mr-3">
+                                <i class="fa-solid fa-arrow-left text-xl"></i>
+                            </button>
+                            <h1 class="text-xl font-semibold">Nouvelle discussion</h1>
+                        </div>
+
+                        <!-- Barre de recherche -->
+                        <div class="p-4">
+                            <div class="relative">
+                                <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input 
+                                    type="text" 
+                                    id="contact-search"
+                                    placeholder="Rechercher un nom ou un numéro" 
+                                    class="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Options de création -->
+                        <div class="px-4 pb-4">
+                            <!-- Nouveau groupe -->
+                            <div id="new-group-btn" class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer mb-2">
+                                <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fa-solid fa-users text-white text-lg"></i>
+                                </div>
+                                <span class="text-lg font-medium">Nouveau groupe</span>
+                            </div>
+
+                            <!-- Nouveau contact -->
+                            <div class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer" id="new-contact-btn">
+                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fa-solid fa-user-plus text-white text-lg"></i>
+                                </div>
+                                <span class="text-lg font-medium">Nouveau contact</span>
+                            </div>
+
+                            <!-- Section Contacts -->
+                            <div class="flex-1 overflow-y-auto">
+                                <div class="px-4 py-2">
+                                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Contacts sur WhatsApp</h3>
+                                </div>
+
+                                <!-- Liste des contacts -->
+                                <div id="contacts-list">
+                                    <!-- Les contacts seront ajoutés dynamiquement -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Chat area -->
+                <section class="flex-1 flex flex-col bg-gray-50">
+                    <header class="flex items-center justify-between p-4 border-b">
+                        <div class="flex items-center gap-3">
+                            <img id="chat-header-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23E0E7FF'/%3E%3Ctext x='20' y='26' font-family='Arial' font-size='16' font-weight='bold' text-anchor='middle' fill='%234F46E5'%3E?%3C/text%3E%3C/svg%3E" alt="Avatar" class="w-10 h-10 rounded-full border">
+                            <span id="chat-header-name" class="font-semibold text-lg">Sélectionnez une conversation</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button><i class="fa-solid fa-search"></i></button>
+                            <button><i class="fa-solid fa-ellipsis-v"></i></button>
+                        </div>
+                    </header>
+                    <div id="chat-messages" class="flex-1 overflow-y-auto p-6 flex items-center justify-center">
+                        <div class="text-center text-gray-500">
+                            <i class="fa-solid fa-comments text-6xl mb-4"></i>
+                            <p class="text-lg">Sélectionnez une conversation pour commencer</p>
+                        </div>
+                    </div>
+                    <footer class="p-4 border-t flex items-center gap-2 bg-white">
+                        <button class="p-2 text-gray-600 hover:text-gray-700">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        <div class="flex-1 flex items-center bg-gray-100 rounded-full px-3">
+                            <input 
+                                type="text" 
+                                placeholder="Entrez un message" 
+                                class="flex-1 py-2 bg-transparent focus:outline-none"
+                                maxlength="1000"
+                            >
+                            <button class="p-1 text-gray-600 hover:text-gray-700">
+                                <i class="fa-solid fa-face-smile"></i>
+                            </button>
+                        </div>
+                        <button class="p-2 text-gray-600 hover:text-gray-700">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                    </footer>
+                </section>
+            </main>
         </div>
-      </div>
-      
-      <div class="text-center py-4">
-        <span class="text-blue-600 font-medium">Ajouter une image</span>
-      </div>
-
-      <!-- Formulaire -->
-      <div class="px-6 space-y-6">
-        <!-- Prénom -->
-        <div class="space-y-2">
-          <input 
-            type="text" 
-            id="prenom"
-            name="prenom"
-            placeholder="Prénom" 
-            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
-            required
-          >
-        </div>
-
-        <!-- Prénom phonétique -->
-        <div class="space-y-2">
-          <input 
-            type="text" 
-            id="prenom-phonetique"
-            name="prenom-phonetique"
-            placeholder="Prénom phonétique" 
-            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
-          >
-        </div>
-
-        <!-- Nom -->
-        <div class="space-y-2">
-          <input 
-            type="text" 
-            id="nom"
-            name="nom"
-            placeholder="Nom" 
-            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
-            required
-          >
-        </div>
-
-        <!-- Nom phonétique -->
-        <div class="space-y-2">
-          <input 
-            type="text" 
-            id="nom-phonetique"
-            name="nom-phonetique"
-            placeholder="Nom phonétique" 
-            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
-          >
-        </div>
-
-        <!-- Entreprise -->
-        <div class="space-y-2">
-          <input 
-            type="text" 
-            id="entreprise"
-            name="entreprise"
-            placeholder="Entreprise" 
-            class="w-full px-4 py-3 border-b-2 border-gray-200 focus:border-blue-600 focus:outline-none text-lg bg-transparent"
-          >
-        </div>
-
-        <!-- Téléphone -->
-        <div class="space-y-2">
-          <label class="text-sm text-gray-500 font-medium">Téléphone (Mobile)</label>
-          <div class="flex items-center border-b-2 border-gray-200 focus-within:border-blue-600">
-            <!-- Sélecteur de pays -->
-            <div class="flex items-center pr-3 border-r border-gray-200">
-              <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
-            </div>
-            <span class="px-3 text-lg">+221</span>
-            <input 
-              type="tel" 
-              id="phone"
-              name="phone"
-              placeholder="77 123 45 67"
-              class="flex-1 py-3 focus:outline-none text-lg bg-transparent"
-              required
-            >
-            <button type="button" class="p-2 text-red-500 hover:bg-red-50 rounded">
-              <i class="fa-solid fa-minus-circle"></i>
-            </button>
-          </div>
-        </div>
-
-        
-
-        <!-- Message d'erreur -->
-        <div id="addContactError" class="text-red-500 text-sm hidden"></div>
-
-        <!-- Boutons d'action -->
-        <div class="flex justify-end space-x-3 pt-6 pb-8">
-          <button 
-            type="button" 
-            id="cancelContactBtn"
-            class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
-          >
-            Annuler
-          </button>
-          <button 
-            type="submit" 
-            id="saveContactBtn"
-            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
-          >
-            Enregistrer
-          </button>
-        </div>
-      </div>
-    </form>
-￼
-  </div>
-</div>
-    <!-- Chat area -->
-    <section class="flex-1 flex flex-col bg-gray-50">
-      <header class="flex items-center justify-between p-4 border-b">
-  <div class="flex items-center gap-3">
-    <img id="chat-header-avatar" src="images/xxx.jpeg" alt="Avatar" class="w-10 h-10 rounded-full border">
-    <span id="chat-header-name" class="font-semibold text-lg"></span>
-  </div>
-  <div class="flex items-center gap-4">
-    <button><i class="fa-solid fa-search"></i></button>
-    <div class="relative">
-  <button id="chat-menu-btn" class="p-2 rounded hover:bg-gray-100">
-    <i class="fa-solid fa-ellipsis-v"></i>
-  </button>
-  <div id="chat-menu-dropdown" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50 hidden">
-    <button id="delete-contact-btn" class="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600">Supprimer le contact</button>
-  </div>
-</div>
-  </div>
-</header>
-      <div id="chat-messages" class="flex-1 overflow-y-auto p-6" style="background-image: url('images/whatsapp-bg.png'); background-size: cover;">
-        <!-- Les messages s'afficheront ici -->
-      </div>
-      <footer class="p-4 border-t flex items-center gap-2 bg-white">
-        <button class="p-2 text-gray-600 hover:text-gray-700">
-            <i class="fa-solid fa-plus"></i>
-        </button>
-        <div class="flex-1 flex items-center bg-gray-100 rounded-full px-3">
-            <input 
-                type="text" 
-                placeholder="Entrez un message" 
-                class="flex-1 py-2 bg-transparent focus:outline-none"
-                maxlength="1000"
-            >
-            <button class="p-1 text-gray-600 hover:text-gray-700">
-                <i class="fa-solid fa-face-smile"></i>
-            </button>
-        </div>
-        <!-- Le bouton d'envoi sera ajouté dynamiquement par JavaScript -->
-        <button class="p-2 text-gray-600 hover:text-gray-700">
-            <i class="fa-solid fa-microphone"></i>
-        </button>
-      </footer>
-    </section>
-  </main>
-</div>
-
-    <!-- Vue Ajout de Contact -->
-<div id="add-contact-view" class="hidden">
-    <div class="bg-white border-b border-gray-200 p-4">
-        <div class="flex items-center space-x-4">
-            <button id="back-to-new-chat" class="text-gray-600 hover:text-gray-800">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </button>
-           </div>
     </div>
-    
-  </div>
+<script type="module" src="src/main.js"></script>
 
-  <!-- Popup de confirmation personnalisée -->
-<div id="custom-popup" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
-  <div class="bg-white rounded-xl p-6 shadow-lg max-w-xs w-full text-center">
-    <div id="custom-popup-message" class="mb-4 text-gray-800"></div>
-    <div class="flex justify-center gap-4">
-      <button id="custom-popup-cancel" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700">Annuler</button>
-      <button id="custom-popup-ok" class="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white">Confirmer</button>
-    </div>
-  </div>
-</div>
-
-    <!-- Vue Paramètres -->
-<div id="settings-view" class="hidden fixed inset-0 bg-white z-50 flex">
-  <!-- Sidebar à gauche -->
-  <nav class="flex flex-col items-center py-4 bg-gray-50 border-r w-20 h-full">
-    <button class="mb-6"><i class="fa-solid fa-comment-dots text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-regular fa-circle text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-regular fa-comments text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-solid fa-users text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-solid fa-store text-2xl"></i></button>
-    <div class="flex-1"></div>
-    <button id="settings-btn" class="mb-6"><i class="fa-solid fa-gear text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-solid fa-right-from-bracket text-2xl text-red-500"></i></button>
-    <img src="images/xxx.jpeg" alt="Avatar" id="sidebar-profile-avatar" class="w-10 h-10 rounded-full border-2 border-gray-300 mb-2 cursor-pointer">
-  </nav>
-  <!-- Contenu paramètres élargi -->
-  <aside class="w-[650px] bg-gray-50 border-r p-8 flex flex-col">
-    <h2 class="text-2xl font-bold mb-6">Paramètres</h2>
-    <div class="flex items-center mb-6">
-      <img src="images/xxx.jpeg" alt="User" class="w-16 h-16 rounded-full border-2 border-gray-300 mr-4">
-      <div>
-        <div class="font-semibold text-lg" id="settings-username">Fatousha</div>
-        <div class="text-gray-500 text-sm">Salut ! J’utilise WhatsApp.</div>
-      </div>
-    </div>
-    <input type="text" placeholder="Rechercher dans les paramètres" class="w-full px-4 py-2 rounded bg-gray-100 mb-6 focus:outline-none">
-    <ul class="space-y-4">
-      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-briefcase"></i> Outils professionnels</li>
-      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-key"></i> Compte</li>
-      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-lock"></i> Confidentialité</li>
-      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-comments"></i> Discussions</li>
-      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-bell"></i> Notifications</li>
-      <li class="flex items-center gap-3 text-gray-700"><i class="fa-solid fa-keyboard"></i> Raccourcis clavier</li>
-    </ul>
-    <button id="close-settings-btn" class="mt-10 px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 w-full">Fermer</button>
-  </aside>
-  <div class="flex-1 flex flex-col items-center justify-center">
-    <i class="fa-solid fa-gear text-7xl text-gray-300 mb-6"></i>
-    <h1 class="text-3xl font-bold text-gray-700">Paramètres</h1>
-  </div>
-</div>
-
-    <!-- Vue Profil -->
-<div id="profile-view" class="hidden fixed inset-0 bg-white z-50 flex">
-  <!-- Sidebar à gauche -->
-  <nav class="flex flex-col items-center py-4 bg-gray-50 border-r w-20 h-full">
-    <button class="mb-6"><i class="fa-solid fa-comment-dots text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-regular fa-circle text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-regular fa-comments text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-solid fa-users text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-solid fa-store text-2xl"></i></button>
-    <div class="flex-1"></div>
-    <button id="settings-btn" class="mb-6"><i class="fa-solid fa-gear text-2xl"></i></button>
-    <button class="mb-6"><i class="fa-solid fa-right-from-bracket text-2xl text-red-500"></i></button>
-    <img src="images/xxx.jpeg" alt="Avatar" id="sidebar-profile-avatar" class="w-10 h-10 rounded-full border-2 border-gray-300 mb-2 cursor-pointer">
-  </nav>
-  <!-- Profil utilisateur à gauche -->
-  <div class="w-[420px] bg-white border-r flex flex-col">
-    <div class="flex items-center p-4 border-b bg-white">
-      <button id="back-to-main-btn" class="mr-4 text-gray-600 hover:text-gray-800">
-        <i class="fa-solid fa-arrow-left text-2xl"></i>
-      </button>
-      <span class="text-xl font-semibold">Profil</span>
-    </div>
-    <div class="flex-1 flex flex-col items-center bg-gray-50">
-      <div class="relative mt-8 mb-4">
-        <img id="profile-avatar" src="images/xxx.jpeg" alt="Avatar" class="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover">
-        <button class="absolute bottom-2 right-2 bg-gray-200 rounded-full p-2 shadow" title="Modifier la photo">
-          <i class="fa-solid fa-pen text-gray-600"></i>
-        </button>
-      </div>
-      <div class="space-y-6 w-full max-w-md px-6">
-        <div class="flex items-center gap-4">
-          <i class="fa-solid fa-briefcase text-xl text-gray-500"></i>
-          <span id="profile-name" class="font-semibold text-lg">Fatousha</span>
-        </div>
-        <div class="flex items-center gap-4">
-          <i class="fa-solid fa-phone text-xl text-gray-500"></i>
-          <div>
-            <div id="profile-phone" class="font-medium">+221 77 142 81 50</div>
-            <div class="text-xs text-gray-500">Le nom et le numéro de téléphone seront visibles par votre clientèle WhatsApp et pourront être modifiés à partir de l’application sur votre appareil mobile.</div>
-          </div>
-        </div>
-        <div class="flex items-center gap-4">
-          <i class="fa-solid fa-users text-xl text-gray-500"></i>
-          <span id="profile-status" class="font-medium">Utilisateur privé</span>
-          <button class="ml-auto text-gray-400 hover:text-gray-600"><i class="fa-solid fa-pen"></i></button>
-        </div>
-        <div class="flex items-center gap-4">
-          <i class="fa-solid fa-location-dot text-xl text-gray-500"></i>
-          <span id="profile-location" class="font-medium">Dakar, Sénégal</span>
-          <button class="ml-auto text-gray-400 hover:text-gray-600"><i class="fa-solid fa-pen"></i></button>
-        </div>
-        <div>
-          <img src="images/map.png" alt="Carte" class="rounded-xl w-full h-32 object-cover mt-2">
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Partie droite : Profil centré -->
-  <div class="flex-1 flex flex-col items-center justify-center bg-white">
-    <i class="fa-regular fa-user text-7xl text-gray-300 mb-6"></i>
-    <h1 class="text-3xl font-bold text-gray-700">Profil</h1>
-  </div>
-</div>
-
-    <!-- Vue Ajout de Groupe -->
-<div id="add-group-view" class="hidden fixed inset-0 bg-white z-50 flex flex-col">
-  <div class="flex items-center p-4 border-b bg-white">
-    <button id="back-to-main-from-group" class="mr-4 text-gray-600 hover:text-gray-800">
-      <i class="fa-solid fa-arrow-left text-2xl"></i>
-    </button>
-    <span class="text-xl font-semibold">Ajouter des membres au groupe</span>
-  </div>
-  <div class="flex-1 overflow-y-auto px-8 py-4">
-    <input type="text" placeholder="Rechercher un nom ou un numéro" class="w-full border-b py-3 px-2 mb-6 text-lg focus:outline-none" />
-    <div class="text-gray-400 font-semibold mb-2">A</div>
-    <ul class="space-y-4" id="group-contacts-list"></ul>
-  </div>
-</div>
-
-  <script type="module" src="src/main.js"></script>
  
 </body>
 </html>

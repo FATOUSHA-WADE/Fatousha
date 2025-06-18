@@ -1,5 +1,5 @@
 import { apiService } from './api.js';
-import { showNotification, showError, hideError } from './errors.js';
+import { showNotification } from './errors.js';
 
 export class ContactsManager {
   constructor() {
@@ -58,6 +58,7 @@ export class ContactsManager {
           return savedContact;
       } catch (error) {
           console.error('Erreur lors de l\'ajout du contact:', error);
+          showNotification(error.message || 'Erreur lors de l\'ajout du contact', 'error');
           throw error;
       }
   }
