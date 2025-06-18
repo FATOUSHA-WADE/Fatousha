@@ -8,11 +8,15 @@ import { showNotification, setupGlobalErrorHandling, showConfirmPopup, showError
 import { resizeImage, validatePhone, formatPhone } from './modules/utils.js';
 
 // API_URL n'est pas défini
-const API_URL = 'http://localhost:3000/api'; // ou votre URL d'API
+const API_URL = 'https://json-backend-2-kyx1.onrender.com'; // ou votre URL d'API
 
+// Variables globales d'authentification
+let currentUser = null;
+let isLoggedIn = false;
 // apiService n'est pas importé
 import { ApiService } from './modules/api.js';
-const apiService = new ApiService();
+const apiService = new ApiService(API_URL);
+
 
 
 // Instances des managers
@@ -26,8 +30,10 @@ function syncAuthVariables() {
     
     if (currentUser) {
         localStorage.setItem('whatsapp_user', JSON.stringify(currentUser));
+        localStorage.setItem('whatsapp_token', 'dummy_token'); // Token temporaire
     }
 }
+
 
 // CORRECTION: Fonction pour charger les données de l'application
 async function loadAppData() {
@@ -52,6 +58,7 @@ function checkAuthentication() {
         try {
             currentUser = JSON.parse(user);
             isLoggedIn = true;
+            syncAuthVariables();
             return true;
         } catch (error) {
             console.error('Erreur parsing user data:', error);
@@ -68,6 +75,9 @@ function checkAuthentication() {
 // Fonction initializeApp() appelée mais non définie
 async function initializeApp() {
     try {
+        // Afficher l'application principale
+        showMainApp();
+        
         // Charger les données de l'application
         await loadAppData();
         
@@ -81,18 +91,35 @@ async function initializeApp() {
         showConversationsView();
         
         console.log('Application initialisée avec succès');
+        showNotification('Connexion réussie!', 'success');
     } catch (error) {
         console.error('Erreur lors de l\'initialisation de l\'app:', error);
         showNotification('Erreur lors de l\'initialisation', 'error');
     }
 }
-
 // Fonction showLoginInterface() appelée mais non définie
 function showLoginInterface() {
-    // Rediriger vers la page de connexion ou afficher le formulaire de connexion
-    window.location.href = 'index.html';
+    // Afficher la vue de connexion et cacher l'application principale
+    const loginView = document.getElementById('login-view');
+    const mainApp = document.getElementById('main-app');
+    
+    if (loginView && mainApp) {
+        loginView.classList.remove('hidden');
+        mainApp.classList.add('hidden');
+    } else {
+        // Fallback : redirection vers index.html
+        window.location.href = 'index.html';
+    }
 }
-
+function showMainApp() {
+    const loginView = document.getElementById('login-view');
+    const registerView = document.getElementById('register-view');
+    const mainApp = document.getElementById('main-app');
+    
+    if (loginView) loginView.classList.add('hidden');
+    if (registerView) registerView.classList.add('hidden');
+    if (mainApp) mainApp.classList.remove('hidden');
+}
 // Initialisation
 document.addEventListener('DOMContentLoaded', async function() {
     try {
@@ -142,6 +169,7 @@ function setupEventListeners() {
         showConversationsView();
     });
 }
+
 
 function setupNavigationEvents() {
     document.getElementById('new-chat-btn')?.addEventListener('click', showNewChatView);
@@ -423,3 +451,336 @@ window.addEventListener('unhandledrejection', function(event) {
     showNotification('Erreur de chargement des données', 'error');
     event.preventDefault();
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des vues de connexion/inscription
+    const createAccountLink = document.getElementById('createAccountLink');
+    const backToLoginLink = document.getElementById('backToLoginLink');
+    const loginView = document.getElementById('login-view');
+    const registerView = document.getElementById('register-view');
+
+    // Basculer vers la vue d'inscription
+    if (createAccountLink) {
+        createAccountLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (loginView) loginView.classList.add('hidden');
+            if (registerView) registerView.classList.remove('hidden');
+        });
+    }
+
+    // Retour à la vue de connexion
+    if (backToLoginLink) {
+        backToLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (registerView) registerView.classList.add('hidden');
+            if (loginView) loginView.classList.remove('hidden');
+        });
+    }
+
+    // Gestion du formulaire de connexion
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+
+    // Gestion du formulaire d'inscription
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
+    }
+
+    // Gestion de l'affichage/masquage du mot de passe
+    setupPasswordToggles();
+});
+
+// Fonction de connexion
+async function handleLogin(event) {
+    event.preventDefault();
+    
+    const loginBtn = document.getElementById('loginBtn');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const loginSpinner = document.getElementById('loginSpinner');
+    const loginError = document.getElementById('loginError');
+    
+    const formData = new FormData(event.target);
+    const identifier = formData.get('identifier').trim();
+    const password = formData.get('password').trim();
+    const rememberMe = formData.get('rememberMe') === 'on';
+    
+    // Validation de base
+    if (!identifier || !password) {
+        showLoginError('Veuillez remplir tous les champs');
+        return;
+    }
+    
+    // État de chargement
+    loginBtn.disabled = true;
+    loginBtnText.textContent = 'Connexion...';
+    loginSpinner.classList.remove('hidden');
+    hideLoginError();
+    
+    try {
+        // Simuler un appel API ou utiliser des données locales
+        const userData = await authenticateUser(identifier, password);
+        
+        if (userData) {
+            // Connexion réussie
+            currentUser = userData;
+            isLoggedIn = true;
+            
+            // Sauvegarder les données
+            localStorage.setItem('whatsapp_user', JSON.stringify(userData));
+            localStorage.setItem('whatsapp_token', 'dummy_token_' + Date.now());
+            
+            if (rememberMe) {
+                localStorage.setItem('whatsapp_remember', 'true');
+            }
+            
+            // Initialiser l'application
+            await initializeApp();
+        } else {
+            showLoginError('Identifiants incorrects');
+        }
+    } catch (error) {
+        console.error('Erreur de connexion:', error);
+        showLoginError('Erreur de connexion. Veuillez réessayer.');
+    } finally {
+        // Restaurer l'état du bouton
+        loginBtn.disabled = false;
+        loginBtnText.textContent = 'Se connecter';
+        loginSpinner.classList.add('hidden');
+    }
+}
+
+// Fonction d'inscription
+async function handleRegister(event) {
+    event.preventDefault();
+    
+    const registerBtn = document.getElementById('registerBtn');
+    const registerBtnText = document.getElementById('registerBtnText');
+    const registerSpinner = document.getElementById('registerSpinner');
+    
+    const formData = new FormData(event.target);
+    const userData = {
+        fullName: formData.get('fullName').trim(),
+        email: formData.get('email').trim(),
+        phone: formData.get('phone').trim(),
+        password: formData.get('newPassword').trim(),
+        confirmPassword: formData.get('confirmPassword').trim()
+    };
+    
+    // Validation
+    if (!validateRegisterData(userData)) {
+        return;
+    }
+    
+    // État de chargement
+    registerBtn.disabled = true;
+    registerBtnText.textContent = 'Création...';
+    registerSpinner.classList.remove('hidden');
+    hideRegisterError();
+    
+    try {
+        const newUser = await createUser(userData);
+        
+        if (newUser) {
+            // Inscription réussie, connecter automatiquement
+            currentUser = newUser;
+            isLoggedIn = true;
+            
+            localStorage.setItem('whatsapp_user', JSON.stringify(newUser));
+            localStorage.setItem('whatsapp_token', 'dummy_token_' + Date.now());
+            
+            // Initialiser l'application
+            await initializeApp();
+        }
+    } catch (error) {
+        console.error('Erreur d\'inscription:', error);
+        showRegisterError('Erreur lors de la création du compte');
+    } finally {
+        registerBtn.disabled = false;
+        registerBtnText.textContent = 'Créer le compte';
+        registerSpinner.classList.add('hidden');
+    }
+}
+
+// Authentification utilisateur (simulation avec données locales)
+async function authenticateUser(identifier, password) {
+    // Utilisateurs par défaut pour test
+    const defaultUsers = [
+        {
+            id: 1,
+            name: "Admin",
+            email: "admin@whatsapp.com",
+            phone: "+221771234567",
+            password: "admin123",
+            avatar: null
+        },
+        {
+            id: 2,
+            name: "Test User",
+            email: "test@example.com",
+            phone: "+221771234568",
+            password: "test123",
+            avatar: null
+        }
+    ];
+    
+    // Vérifier les utilisateurs stockés localement
+    let users = JSON.parse(localStorage.getItem('whatsapp_users') || '[]');
+    if (users.length === 0) {
+        users = defaultUsers;
+        localStorage.setItem('whatsapp_users', JSON.stringify(users));
+    }
+    
+    // Rechercher l'utilisateur
+    const user = users.find(u => 
+        (u.email === identifier || u.phone === identifier) && u.password === password
+    );
+    
+    if (user) {
+        // Retourner une copie sans le mot de passe
+        const { password: pwd, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+    }
+    
+    return null;
+}
+
+// Créer un nouvel utilisateur
+async function createUser(userData) {
+    let users = JSON.parse(localStorage.getItem('whatsapp_users') || '[]');
+    
+    // Vérifier si l'utilisateur existe déjà
+    const existingUser = users.find(u => 
+        u.email === userData.email || u.phone === userData.phone
+    );
+    
+    if (existingUser) {
+        throw new Error('Un utilisateur avec cet email ou téléphone existe déjà');
+    }
+    
+    // Créer le nouvel utilisateur
+    const newUser = {
+        id: Date.now(),
+        name: userData.fullName,
+        email: userData.email,
+        phone: userData.phone,
+        password: userData.password,
+        avatar: null,
+        createdAt: new Date().toISOString()
+    };
+    
+    users.push(newUser);
+    localStorage.setItem('whatsapp_users', JSON.stringify(users));
+    
+    // Retourner sans le mot de passe
+    const { password, ...userWithoutPassword } = newUser;
+    return userWithoutPassword;
+}
+
+// Validation des données d'inscription
+function validateRegisterData(userData) {
+    if (!userData.fullName) {
+        showRegisterError('Le nom complet est requis');
+        return false;
+    }
+    
+    if (!userData.email || !isValidEmail(userData.email)) {
+        showRegisterError('Email invalide');
+        return false;
+    }
+    
+    if (!userData.phone) {
+        showRegisterError('Le numéro de téléphone est requis');
+        return false;
+    }
+    
+    if (!userData.password || userData.password.length < 6) {
+        showRegisterError('Le mot de passe doit contenir au moins 6 caractères');
+        return false;
+    }
+    
+    if (userData.password !== userData.confirmPassword) {
+        showRegisterError('Les mots de passe ne correspondent pas');
+        return false;
+    }
+    
+    return true;
+}
+
+// Validation email
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// Afficher/masquer les erreurs
+function showLoginError(message) {
+    const loginError = document.getElementById('loginError');
+    if (loginError) {
+        loginError.textContent = message;
+        loginError.classList.remove('hidden');
+    }
+}
+
+function hideLoginError() {
+    const loginError = document.getElementById('loginError');
+    if (loginError) {
+        loginError.classList.add('hidden');
+    }
+}
+
+function showRegisterError(message) {
+    const registerError = document.getElementById('registerError');
+    if (registerError) {
+        registerError.textContent = message;
+        registerError.classList.remove('hidden');
+    }
+}
+
+function hideRegisterError() {
+    const registerError = document.getElementById('registerError');
+    if (registerError) {
+        registerError.classList.add('hidden');
+    }
+}
+
+// Configuration des boutons de basculement de mot de passe
+function setupPasswordToggles() {
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleNewPassword = document.getElementById('toggleNewPassword');
+    
+    if (togglePassword) {
+        togglePassword.addEventListener('click', () => {
+            const passwordInput = document.getElementById('password');
+            const icon = togglePassword.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    }
+    
+    if (toggleNewPassword) {
+        toggleNewPassword.addEventListener('click', () => {
+            const passwordInput = document.getElementById('newPassword');
+            const icon = toggleNewPassword.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    }
+}
